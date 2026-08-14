@@ -6,19 +6,18 @@ import BlogPost from './pages/BlogPost';
 import './index.css'; 
 import './App.css'; 
 
-export default function App() {
+function App() {
   return(
     <>
-    <Header />
-<main>
+<Header />
   <Routes>
    <Route path="/" element={<Home />} />
    <Route path="/blog" element={<Blog />} />
    <Route path="/blog/:slug" element={<BlogPost />} />
    </Routes>
-    </main>
     </>
   );
   }
+  export default App;
 
 

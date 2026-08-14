@@ -1,10 +1,10 @@
 const NIVEIS=[
- { id: 'a1', label: 'A1 . Iniciante', duracao: '8 semanas', preco: '15.000 kz/mês'},
- { id: 'a2', label: 'A2 . Elementar', duracao: '8 semanas', preco: '15.000 kz/mês'},
- { id: 'b1', label: 'B1 . Intermédio', duracao: '10 semanas', preco: '18.000 kz/mês'},
- { id: 'b2', label: 'B2 . Intermédio Alto', duracao: '10 semanas', preco: '18.000 kz/mês'},
- { id: 'c1', label: 'C1 . Avançado', duracao: '12 semanas', preco: '20.000 kz/mês'},
- { id: 'c2', label: 'C2 . Proficiente', duracao: '12 semanas', preco: '20.000 kz/mês'},
+ { id: 'a1', label: 'A1 . Iniciante', duracao: '8 semanas'},
+ { id: 'a2', label: 'A2 . Elementar', duracao: '8 semanas'},
+ { id: 'b1', label: 'B1 . Intermédio', duracao: '10 semanas'},
+ { id: 'b2', label: 'B2 . Intermédio Alto', duracao: '10 semanas'},
+ { id: 'c1', label: 'C1 . Avançado', duracao: '12 semanas'},
+ { id: 'c2', label: 'C2 . Proficiente', duracao: '12'},
 
 ];
 export default function Cursos(){
