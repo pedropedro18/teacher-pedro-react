@@ -1,8 +1,8 @@
+import { Routes, Route } from 'react-router-dom';
 import Header from './header';
-import Hero from './Hero';
-import Sobre from './Sobre';  
-import Cursos from './Cursos';
-import Contacto from './Contacto';   
+import Home from './pages/Home';
+import Blog from './pages/Blog';  
+import BlogPost from './pages/BlogPost';
 import './index.css'; 
 import './App.css'; 
 
@@ -11,11 +11,14 @@ export default function App() {
     <>
     <Header />
 <main>
-  <Hero />
-   <Sobre />
-   <Cursos />
-  <Contacto/>
+  <Routes>
+   <Route path="/" element={<Home />} />
+   <Route path="/blog" element={<Blog />} />
+   <Route path="/blog/:slug" element={<BlogPost />} />
+   </Routes>
     </main>
     </>
   );
   }
+
+

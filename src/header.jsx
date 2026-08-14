@@ -1,3 +1,4 @@
+import { Link, useNavigate} from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
 const LINKS = [
@@ -9,7 +10,21 @@ const LINKS = [
 
 export default function Header() {
   const [active, setActive] = useState('inicio');
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+
+  const handleNavClick = (id) => (e) => {
+    e.preventDefault();
+    setOpen(false);
+    if (window.location.pathname !== '/') {
+      navigate('/');
+      setTimeout(() => {
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    } else {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   useEffect(() => {
     const sections = LINKS.map((l) => document.getElementById(l.id));
@@ -41,12 +56,17 @@ export default function Header() {
               <a
                 href={`#${link.id}`}
                 className={active === link.id ? 'active' : ''}
-                onClick={() => setOpen(false)}
+                onClick={handleNavClick(link.id)}
               >
                 {link.label}
               </a>
             </li>
           ))}
+          <li>
+            <Link to="/blog" onClick={() => setOpen(false)}>
+              Blog
+            </Link>
+          </li>
         </ul>
       </nav>
       <button className="menu-toggle" onClick={() => setOpen(!open)}>
@@ -55,4 +75,3 @@ export default function Header() {
     </header>
   );
 }
-
