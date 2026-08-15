@@ -1,6 +1,7 @@
 ---
-title: Leitura: A Café in Lisbon (Short Story — B1/B2)
+title: Leitura: in Lisbon (Short Story — B1)
 date: 2026-08-15
+level: B1
 ---
 
 Practise your reading with this short story. Try to understand the meaning from context before checking any word in a dictionary. Vocabulary notes are at the end.

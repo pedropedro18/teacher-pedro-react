@@ -1,6 +1,7 @@
 ---
 title: Leitura: Weekend Plans (Short Text — A2)
 date: 2026-08-15
+level: A2
 ---
 
 Practise your reading with this text. It has slightly longer sentences than A1, but the vocabulary is still simple.

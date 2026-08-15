@@ -1,6 +1,7 @@
 ---
 title: Leitura: The Weight of Silence (Short Story — C1)
 date: 2026-08-15
+level: C1
 ---
 
 Practise your reading with this more advanced text. Pay attention to the nuances of tone and the more complex sentence structures.

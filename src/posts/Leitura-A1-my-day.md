@@ -1,6 +1,7 @@
 ---
 title: Leitura: My Day (Short Text — A1)
 date: 2026-08-15
+level: A1
 ---
 
 Practise your reading with this simple text. It uses easy words and short sentences.

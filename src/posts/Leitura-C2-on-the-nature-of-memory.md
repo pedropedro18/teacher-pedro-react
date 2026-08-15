@@ -1,6 +1,7 @@
 ---
 title: Leitura: On the Nature of Memory (Essay — C2)
 date: 2026-08-15
+level: C2
 ---
 
 This C2-level text explores an abstract theme through sophisticated vocabulary and complex syntax. Read it slowly, and consider the argument being constructed.
