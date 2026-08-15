@@ -1,4 +1,4 @@
-export const posts = import.meta.glob('../posts/*.md', { eager: true, query: '?raw', import: 'default' });
+export const posts = import.meta.glob(['../posts/*.md', '../post-*/*.md'],{ eager: true, query: '?raw', import: 'default' });
 
 export function parsePost(raw, path) {
   const clean = raw.replace(/^\uFEFF/, '');
