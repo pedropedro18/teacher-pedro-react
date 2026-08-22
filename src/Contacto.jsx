@@ -13,7 +13,7 @@ export default function Contacto() {
     const corpo = encodeURIComponent(
       `Nome: ${form.nome}\nEmail: ${form.email}\n\nMensagem:\n${form.mensagem}`
     );
-    window.location.href = `mailto:teacherpedro@example.com?subject=${assunto}&body=${corpo}`;
+    window.location.href = `mailto:pedro.tomas@maplebear.edu.ao?subject=${assunto}&body=${corpo}`;
   }
 
   return (
