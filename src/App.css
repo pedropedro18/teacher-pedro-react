@@ -387,9 +387,21 @@ html, body {
     align-items: center;
     gap: 12px;
   }
-
   .cta-botao {
-    width: 90%;
-    text-align: center;
-  }
+  display: inline-block;
+  padding: 16px 40px;
+  background: #25D366;
+  color: #fff;
+  font-weight: 600;
+  font-size: 16px;
+  text-decoration: none;
+  border-radius: 50px;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cta-botao:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+}
 }
