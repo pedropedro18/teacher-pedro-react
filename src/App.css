@@ -365,9 +365,31 @@ h1, h2, h3 {
 .about-bloco li {
   margin-bottom: 6px;
 }
-
 .about > .cta-botao {
   display: block;
   width: fit-content;
   margin: 30px auto 0;
+}
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+@media (max-width: 600px) {
+  .diferenciais-grid,
+  .depoimentos-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .cta-botao {
+    width: 90%;
+    text-align: center;
+  }
 }
