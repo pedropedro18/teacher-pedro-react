@@ -1,12 +1,53 @@
-export default function Sobre(){
-    return(
-<section id="sobre" className="about">
-    <img src="/imagens/IMG_20250529_070439_367.jpg" alt="Teacher Pedro" />
-    <p>Teacher Pedro</p>
-    <p>Professor inglês</p>
-<p>
-Professor de inglês há 5 anos, formado pelo programa educador Maplebear. Ensino todos os níveis do (CEFR), dos níveis A1 a C2. Ministro também formação em excel e programação. Combino a experiência em sala de aula com competêcias em desenvolvimento web para criar recursos didáticos digitais acessíveis aos meus alunos. O que mais me motiva no ensino é trabalhar com crianças - a energia e a curiosidade delas tornam cada aula diferente, e é gratificante acompanhar o progresso de cada aluno ao longo do tempo..</p>
-</section>
+export default function Sobre() {
+  return (
+    <section id="sobre" className="about">
+      <div className="about-topo">
+        <img src="/imagens/IMG_20250529_070439_367.jpg" alt="Teacher Pedro" />
+        <div>
+          <p className="about-nome">Teacher Pedro</p>
+          <p>
+            Professor de inglês há 5 anos, formado pelo programa educador Maplebear.
+            Ensino todos os níveis do CEFR (A1 a C2), além de Excel e programação.
+          </p>
+        </div>
+      </div>
 
-    );
-    }
+      <div className="about-bloco">
+        <h3>Missão</h3>
+        <p>
+          Tornar o inglês acessível e prático para qualquer pessoa em Angola,
+          com aulas claras, personalizadas e focadas em resultados reais.
+        </p>
+      </div>
+
+      <div className="about-bloco">
+        <h3>Visão</h3>
+        <p>
+          Ser a referência em ensino de línguas e tecnologia para quem quer
+          crescer profissionalmente e abrir novas oportunidades.
+        </p>
+      </div>
+
+      <div className="about-bloco">
+        <h3>Valores</h3>
+        <ul>
+          <li>Compromisso com o progresso de cada aluno</li>
+          <li>Ensino prático, sem enrolação</li>
+          <li>Respeito ao ritmo individual de aprendizagem</li>
+        </ul>
+      </div>
+
+      <div className="about-bloco">
+        <h3>Formação</h3>
+        <p>
+          Certificação em educação pelo programa Maple Bear, com formação em
+          centros de aprendizagem e ensino por inquérito (inquiry-based learning).
+        </p>
+      </div>
+
+      <a href="https://wa.me/244923030010" target="_blank" rel="noopener noreferrer" className="cta-botao">
+        Falar comigo
+      </a>
+    </section>
+  );
+}
