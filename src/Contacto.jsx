@@ -14,6 +14,7 @@ export default function Contacto() {
       `Nome: ${form.nome}\nEmail: ${form.email}\n\nMensagem:\n${form.mensagem}`
     );
     window.location.href = `mailto:pedro.tomas@maplebear.edu.ao?subject=${assunto}&body=${corpo}`;
+    setForm({ nome: '', email: '', mensagem: ''})
   }
 
   return (
