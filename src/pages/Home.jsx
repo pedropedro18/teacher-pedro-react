@@ -1,15 +1,21 @@
 import Hero from '../Hero';
-import Sobre from '../Sobre';  
+import Diferenciais from '../Diferenciais';
+import Sobre from '../Sobre';
 import Cursos from '../Cursos';
-import Contacto from '../Contacto';   
+import Depoimentos from '../Depoimentos';
+import CTA from '../CTA';
+import Contacto from '../Contacto';
 
 export default function Home() {
-  return(
+  return (
     <>
-  <Hero />
-   <Sobre />
-   <Cursos />
-  <Contacto/>
+      <Hero />
+      <Diferenciais />
+      <Sobre />
+      <Cursos />
+      <Depoimentos />
+      <CTA />
+      <Contacto />
     </>
   );
-  }
+}

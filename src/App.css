@@ -218,3 +218,101 @@ h1, h2, h3 {
   font-size: clamp(1.8rem, 8vw, 2.8rem);
 }
 }
+.diferenciais {
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.diferenciais h2 {
+  font-size: 28px;
+  margin-bottom: 40px;
+}
+
+.diferenciais-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.diferencial-card {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 24px;
+  text-align: left;
+}
+
+.diferencial-card h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.diferencial-card p {
+  font-size: 15px;
+  opacity: 0.85;
+}
+.depoimentos {
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.depoimentos h2 {
+  font-size: 28px;
+  margin-bottom: 40px;
+}
+
+.depoimentos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.depoimento-card {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 24px;
+  text-align: left;
+}
+
+.depoimento-card p {
+  font-style: italic;
+  margin-bottom: 12px;
+}
+
+.depoimento-card span {
+  font-size: 14px;
+  opacity: 0.7;
+}
+.cta {
+  padding: 60px 20px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.cta h2 {
+  font-size: 26px;
+  margin-bottom: 10px;
+}
+
+.cta p {
+  margin-bottom: 24px;
+  opacity: 0.85;
+}
+
+.cta-botao {
+  display: inline-block;
+  padding: 14px 32px;
+  background: #25D366;
+  color: #fff;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 30px;
+  transition: transform 0.2s ease;
+}
+
+.cta-botao:hover {
+  transform: scale(1.05);
+}
