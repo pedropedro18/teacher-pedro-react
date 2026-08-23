@@ -6,6 +6,8 @@
 }
 
 .cursos-section {
+    display: flex;
+    flex-direction: column;
   margin-bottom: 64px;
   scroll-margin-top: 90px;
 }
