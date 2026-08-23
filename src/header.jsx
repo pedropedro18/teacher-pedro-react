@@ -14,10 +14,15 @@ export default function Header() {
   const [open, setOpen] = useState(false);
 
   const handleNavClick = (id) => (e) => {
-    e.preventDefault();
+    if (id === 'cursos'){
     setOpen(false);
-    if (window.location.pathname !== '/') {
-      navigate('/');
+      navigate('/cursos');
+      return;
+      }
+      e.preventDefault();
+      setOpen(false);
+      if (window.location.pathname !== '/') {
+        navigate('/');
       setTimeout(() => {
         document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
       }, 100);
@@ -54,7 +59,7 @@ export default function Header() {
           {LINKS.map((link) => (
             <li key={link.id}>
               <a
-                href={`#${link.id}`}
+                href={link.id === 'cursos' ? '/cursos' : `#${link.id}`}
                 className={active === link.id ? 'active' : ''}
                 onClick={handleNavClick(link.id)}
               >

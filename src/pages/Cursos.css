@@ -1,0 +1,74 @@
+.cursos-page {
+  color: #ffffff;
+  padding: 40px 24px 80px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.cursos-section {
+  margin-bottom: 64px;
+  scroll-margin-top: 90px;
+}
+
+.cursos-section h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.cursos-intro {
+  color: #cfe6f7;
+  margin-bottom: 28px;
+  max-width: 700px;
+}
+
+.cursos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.cursos-card {
+  position: relative;
+  background: linear-gradient(160deg, #1e5fa8, #34a0c9);
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+.cursos-card h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.cursos-card p {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #eaf6ff;
+}
+
+.cursos-card-tag {
+  display: inline-block;
+  font-weight: 800;
+  font-size: 0.85rem;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 2px 10px;
+  border-radius: 999px;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 900px) {
+  .cursos-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .cursos-grid {
+    grid-template-columns: 1fr;
+  }
+  .cursos-section h2 {
+    font-size: 1.6rem;
+  }
+}
