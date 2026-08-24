@@ -7,6 +7,7 @@ import Contacto from './Contacto';
 import BlogPost from './pages/BlogPost';
 import './index.css'; 
 import './App.css'; 
+import { Analytics } from "@vercel/analytics/react";
 
 function App() {
   return(
@@ -19,6 +20,7 @@ function App() {
    <Route path="/blog" element={<Blog />} />
    <Route path="/blog/:slug" element={<BlogPost />} />
    </Routes>
+   <Analytics />
     </>
   );
   }
