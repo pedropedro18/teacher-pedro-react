@@ -1,0 +1,100 @@
+.admin-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 100px 24px 60px;
+  color: #fff;
+}
+
+.admin-page h1 {
+  margin-bottom: 24px;
+}
+
+.admin-erro {
+  background: #c0392b;
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+}
+
+.admin-form {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 32px;
+}
+
+.admin-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.admin-form input,
+.admin-form select {
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: none;
+  font-size: 14px;
+}
+
+.admin-form-botoes {
+  display: flex;
+  gap: 12px;
+}
+
+.admin-form button,
+.admin-tabela button {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  background: #2980b9;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-cancelar {
+  background: #7f8c8d !important;
+}
+
+.btn-apagar {
+  background: #c0392b !important;
+  margin-left: 8px;
+}
+
+.admin-lista-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.admin-busca {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: none;
+  min-width: 240px;
+}
+
+.admin-tabela {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.admin-tabela th,
+.admin-tabela td {
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-tabela th {
+  background: rgba(0, 0, 0, 0.2);
+}
