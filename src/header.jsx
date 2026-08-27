@@ -72,7 +72,12 @@ export default function Header() {
               Blog
             </Link>
           </li>
-        </ul>
+<li>
+  <Link to="/login-aluno" onClick={() => setOpen(false)}>
+    Área do Aluno
+  </Link>
+</li>
+</ul>
       </nav>
       <button className="menu-toggle" onClick={() => setOpen(!open)}>
         ☰
