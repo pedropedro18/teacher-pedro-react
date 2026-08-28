@@ -8,7 +8,7 @@ import { login, verificarToken } from './api/auth.js';
 import { loginAluno, definirPasswordAluno, meuPerfil, verificarTokenAluno } from './api/alunoAuth.js';
 
 const __filename = fileURLToPath(import.meta.url);
-const _dirname = path.dirname(_filename);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -27,7 +27,7 @@ app.use('/api/alunos', verificarToken, alunosRouter);
 app.use(express.static(path.join(__dirname, 'dist')));
 
 // Qualquer rota que não seja da API cai no index.html (React Router assume)
-app.get('*', (req, res) => {
+app.get('/*splat', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
