@@ -24,9 +24,13 @@ export default function Admin() {
   const [editandoId, setEditandoId] = useState(null);
   const [enviando, setEnviando] = useState(false);
   const [busca, setBusca] = useState('');
+  const [submissoes, setSubmissoes] = useState([]);
+  const [notaTemp, setNotaTemp] = useState({});
+  const [feedbackTemp, setFeedbackTemp] = useState({});
 
   useEffect(() => {
     buscarAlunos();
+    carregarSubmissoes();
   }, []);
 
   async function buscarAlunos() {
@@ -43,6 +47,42 @@ export default function Admin() {
       setErro(err.message);
     } finally {
       setCarregando(false);
+    }
+  }
+
+  const carregarSubmissoes = async () => {
+    try {
+      const res = await fetch('/api/submissoes', {
+        headers: getAuthHeaders()
+      });
+      const data = await res.json();
+      setSubmissoes(data);
+    } catch (err) {
+      console.error('Erro ao carregar submissões:', err);
+    }
+  };
+
+  async function handleCorrigir(id) {
+    const nota = notaTemp[id];
+    const feedback = feedbackTemp[id];
+
+    try {
+      const res = await fetch(`/api/submissoes/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeaders()
+        },
+        body: JSON.stringify({ nota, feedback })
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        alert(data.erro || 'Erro ao corrigir');
+        return;
+      }
+      carregarSubmissoes();
+    } catch (err) {
+      console.error('Erro ao corrigir submissão:', err);
     }
   }
 
@@ -252,6 +292,47 @@ export default function Admin() {
           </tbody>
         </table>
       )}
+
+      <div className="admin-submissoes">
+        <h2>Submissões dos alunos ({submissoes.length})</h2>
+        {submissoes.length === 0 ? (
+          <p>Nenhuma submissão por enquanto.</p>
+        ) : (
+          <ul className="lista-submissoes-admin">
+            {submissoes.map((s) => (
+              <li key={s.id} className="submissao-item">
+                <p><strong>{s.aluno_nome}</strong> — {s.titulo_exercicio} ({s.nivel})</p>
+                <p className="submissao-resposta">Resposta: {s.resposta}</p>
+
+                {s.corrigido ? (
+                  <p className="submissao-corrigida">
+                    Nota: {s.nota ?? '—'} | Feedback: {s.feedback || 'sem comentário'}
+                  </p>
+                ) : (
+                  <div className="submissao-form-correcao">
+                    <input
+                      type="number"
+                      placeholder="Nota"
+                      value={notaTemp[s.id] ?? ''}
+                      onChange={(e) =>
+                        setNotaTemp({ ...notaTemp, [s.id]: e.target.value })
+                      }
+                    />
+                    <textarea
+                      placeholder="Feedback"
+                      value={feedbackTemp[s.id] ?? ''}
+                      onChange={(e) =>
+                        setFeedbackTemp({ ...feedbackTemp, [s.id]: e.target.value })
+                      }
+                    />
+                    <button onClick={() => handleCorrigir(s.id)}>Corrigir</button>
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 }

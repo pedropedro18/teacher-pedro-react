@@ -4,6 +4,7 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import alunosRouter from './api/alunos.js';
+import submissoesRouter from './api/submissoes.js';
 import { login, verificarToken } from './api/auth.js';
 import { loginAluno, definirPasswordAluno, meuPerfil, verificarTokenAluno } from './api/alunoAuth.js';
 
@@ -20,6 +21,7 @@ app.use(express.json());
 app.post('/api/login', login);
 app.post('/api/aluno/login', loginAluno);
 app.put('/api/alunos/:id/password', verificarToken, definirPasswordAluno);
+app.use('/api/submissoes', submissoesRouter);
 app.get('/api/alunos/me', verificarTokenAluno, meuPerfil);
 app.use('/api/alunos', verificarToken, alunosRouter);
 
