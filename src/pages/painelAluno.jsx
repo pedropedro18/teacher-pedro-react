@@ -4,6 +4,7 @@ import { conteudosPorNivel } from '../data/conteudos';
 
 function PainelAluno() {
   const [aluno, setAluno] = useState(null);
+  const [aberto, setAberto] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,11 +42,25 @@ function PainelAluno() {
           {conteudos.map((item, index) => (
             <li key={index} className="conteudo-item">
               <span className="conteudo-tipo">
-                {item.tipo === 'vídeo' ? '🎬' : '📄'}
+                {item.tipo === 'vídeo' ? '🎬' : item.tipo === 'texto' ? '📝' : '📄'}
               </span>{' '}
-              <a href={item.link} target="_blank" rel="noopener noreferrer">
-                {item.titulo}
-              </a>
+              {item.tipo === 'texto' ? (
+                <>
+                  <button
+                    className="conteudo-titulo-btn"
+                    onClick={() => setAberto(aberto === index ? null : index)}
+                  >
+                    {item.titulo}
+                  </button>
+                  {aberto === index && (
+                    <pre className="conteudo-texto">{item.conteudo}</pre>
+                  )}
+                </>
+              ) : (
+                <a href={item.link} target="_blank" rel="noopener noreferrer">
+                  {item.titulo}
+                </a>
+              )}
             </li>
           ))}
         </ul>
