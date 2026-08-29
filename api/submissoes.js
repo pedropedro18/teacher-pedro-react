@@ -2,6 +2,7 @@
 import expres from 'express';
 import jwt from 'jsonwebtoken';
 import db from './db.js';
+import { verificarToken } from './auth.js';
 
 const router = expres.Router();
 const JWT_SECRET = process.env.JWT_SECRET; // mesmo segredo usado no login do aluno
@@ -27,25 +28,6 @@ function verificarTokenAluno(req, res, next) {
 // --- Middleware: verifica token do ADMIN ---
 // Se já tens um middleware de admin usado no Admin.jsx / alunos.js, importa-o
 // e substitui este por esse, para não duplicar lógica.
-function verificarTokenAdmin(req, res, next) {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-
-  if (!token) {
-    return res.status(401).json({ erro: 'Token não fornecido' });
-  }
-
-  jwt.verify(token, JWT_SECRET, (err, decoded) => {
-    if (err) {
-      return res.status(403).json({ erro: 'Token inválido ou expirado' });
-    }
-    if (!decoded.isAdmin) {
-      return res.status(403).json({ erro: 'Acesso restrito ao administrador' });
-    }
-    req.adminId = decoded.id;
-    next();
-  });
-}
 
 // --- POST /api/submissoes ---
 // Aluno envia uma resposta a um exercício
@@ -57,7 +39,7 @@ router.post('/', verificarTokenAluno, async (req, res) => {
   }
 
   try {
-    const [resultado] = await pool.query(
+    const [resultado] = await db.query(
       `INSERT INTO submissoes (aluno_id, nivel, titulo_exercicio, resposta)
        VALUES (?, ?, ?, ?)`,
       [req.alunoId, nivel, titulo_exercicio, resposta]
@@ -75,9 +57,9 @@ router.post('/', verificarTokenAluno, async (req, res) => {
 
 // --- GET /api/submissoes ---
 // Admin vê todas as submissões, com nome do aluno
-router.get('/', verificarTokenAdmin, async (req, res) => {
+router.get('/', verificarToken, async (req, res) => {
   try {
-    const [linhas] = await pool.query(
+    const [linhas] = await db.query(
       `SELECT s.id, s.nivel, s.titulo_exercicio, s.resposta, s.data_envio,
               s.corrigido, s.nota, s.feedback,
               a.nome AS aluno_nome, a.id AS aluno_id
@@ -96,7 +78,7 @@ router.get('/', verificarTokenAdmin, async (req, res) => {
 // Aluno vê as suas próprias submissões e o respetivo feedback
 router.get('/minhas', verificarTokenAluno, async (req, res) => {
   try {
-    const [linhas] = await pool.query(
+    const [linhas] = await db.query(
       `SELECT id, nivel, titulo_exercicio, resposta, data_envio, corrigido, nota, feedback
        FROM submissoes
        WHERE aluno_id = ?
@@ -112,12 +94,12 @@ router.get('/minhas', verificarTokenAluno, async (req, res) => {
 
 // --- PUT /api/submissoes/:id ---
 // Admin corrige: define nota, feedback, e marca como corrigido
-router.put('/:id', verificarTokenAdmin, async (req, res) => {
+router.put('/:id', verificarToken, async (req, res) => {
   const { id } = req.params;
   const { nota, feedback } = req.body;
 
   try {
-    const [resultado] = await pool.query(
+    const [resultado] = await db.query(
       `UPDATE submissoes
        SET nota = ?, feedback = ?, corrigido = TRUE
        WHERE id = ?`,
