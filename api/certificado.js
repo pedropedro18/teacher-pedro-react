@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get('/certificado/:nivel', verificarTokenAluno, async (req, res) => {
   try {
-    const alunoId = req.alunoId; // confirma que é assim que o teu middleware guarda o id do aluno
+    const alunoId = req.aluno.id; // confirma que é assim que o teu middleware guarda o id do aluno
     const { nivel } = req.params; // ex: 'A1'
 
     // 1. Buscar nome e email do aluno
