@@ -175,17 +175,7 @@ router.get('/certificado/:nivel', verificarTokenAluno, async (req, res) => {
       size: textoNivelSize,
       font: fontRegular,
       color: rgb(0.15, 0.15, 0.15),
-    });
-
-    // Email do aluno (discreto)
-    const emailSize = 10;
-    const textoEmailWidth = fontRegular.widthOfTextAtSize(emailAluno, emailSize);
-    page.drawText(emailAluno, {
-      x: (width - textoEmailWidth) / 2,
-      y: height - 328,
-      size: emailSize,
-      font: fontRegular,
-      color: cinzaClaro,
+   
     });
 
     // Selo circular simples (canto inferior direito, decorativo)
@@ -226,7 +216,7 @@ router.get('/certificado/:nivel', verificarTokenAluno, async (req, res) => {
       thickness: 1,
       color: cinza,
     });
-    const textoAssinatura = 'Pedro — Professor';
+    const textoAssinatura = 'Teacher — Pedro';
     const textoAssinaturaSize = 11;
     page.drawText(textoAssinatura, {
       x: assinaturaX,
