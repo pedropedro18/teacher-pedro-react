@@ -31,7 +31,7 @@ router.get('/certificado/:nivel', verificarTokenAluno, async (req, res) => {
       [alunoId, nivel]
     );
 
-    const totalExercicios = 10; // ajusta este número conforme quantas lições/exercícios cada nível realmente tem
+    const totalExercicios = 1; // ajusta este número conforme quantas lições/exercícios cada nível realmente tem
     const aprovadas = resultado[0].aprovadas || 0;
 
     if (aprovadas < totalExercicios) {
