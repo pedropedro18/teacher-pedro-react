@@ -7,6 +7,7 @@ import alunosRouter from './api/alunos.js';
 import submissoesRouter from './api/submissoes.js';
 import { login, verificarToken } from './api/auth.js';
 import { loginAluno, definirPasswordAluno, meuPerfil, verificarTokenAluno } from './api/alunoAuth.js';
+import certificadoRouter from './api/certificado.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,6 +25,7 @@ app.put('/api/alunos/:id/password', verificarToken, definirPasswordAluno);
 app.use('/api/submissoes', submissoesRouter);
 app.get('/api/alunos/me', verificarTokenAluno, meuPerfil);
 app.use('/api/alunos', verificarToken, alunosRouter);
+app.use('/api', certificadoRouter);
 
 // Serve os arquivos estáticos do build do React
 app.use(express.static(path.join(__dirname, 'dist')));

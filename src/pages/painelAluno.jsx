@@ -24,6 +24,31 @@ function PainelAluno() {
       console.error('Erro ao carregar submissões:', err);
     }
   };
+  async function baixarCertificado(nivel) {
+  const token = localStorage.getItem('tokenAluno');
+  try {
+    const res = await fetch(`/api/certificado/${nivel}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    if (!res.ok) {
+      const erro = await res.json();
+      alert(erro.error || 'Erro ao gerar certificado');
+      return;
+    }
+
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `certificado-${nivel}.pdf`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  } catch (err) {
+    alert('Erro ao baixar certificado');
+    console.error(err);
+  }
+}
 
   useEffect(() => {
     const alunoGuardado = localStorage.getItem('aluno');
