@@ -10,6 +10,7 @@ function PainelAluno() {
   const [enviando, setEnviando] = useState(false);
   const [mensagem, setMensagem] = useState('');
   const [minhasSubmissoes, setMinhasSubmissoes] = useState([]);
+  const [baixando, setBaixando] = useState(false);
   const navigate = useNavigate();
 
   const carregarSubmissoes = async () => {
@@ -26,6 +27,8 @@ function PainelAluno() {
   };
 
   async function baixarCertificado(nivel) {
+    if (baixando) return;
+    setBaixando(true);
     const token = localStorage.getItem('tokenAluno');
     try {
       const res = await fetch(`/api/certificado/${nivel}`, {
@@ -48,6 +51,8 @@ function PainelAluno() {
     } catch (err) {
       alert('Erro ao baixar certificado');
       console.error(err);
+    } finally {
+      setBaixando(false);
     }
   }
 
@@ -110,7 +115,9 @@ function PainelAluno() {
     <div className="painel-aluno">
       <p>Email: {aluno.email}</p>
       <p>Nível CEFR: {nivel}</p>
-      <button onClick={() => baixarCertificado(nivel)}>Baixar Certificado</button>
+      <button onClick={() => baixarCertificado(nivel)} disabled={baixando}>
+        {baixando ? 'A verificar...' : 'Baixar Certificado'}
+      </button>
       <button onClick={handleLogout}>Sair</button>
 
       <h2>Conteúdos do teu nível ({nivel})</h2>
