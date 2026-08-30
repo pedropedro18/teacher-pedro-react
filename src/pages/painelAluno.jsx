@@ -24,31 +24,32 @@ function PainelAluno() {
       console.error('Erro ao carregar submissões:', err);
     }
   };
+
   async function baixarCertificado(nivel) {
-  const token = localStorage.getItem('tokenAluno');
-  try {
-    const res = await fetch(`/api/certificado/${nivel}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+    const token = localStorage.getItem('tokenAluno');
+    try {
+      const res = await fetch(`/api/certificado/${nivel}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
 
-    if (!res.ok) {
-      const erro = await res.json();
-      alert(erro.error || 'Erro ao gerar certificado');
-      return;
+      if (!res.ok) {
+        const erro = await res.json();
+        alert(erro.error || 'Erro ao gerar certificado');
+        return;
+      }
+
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `certificado-${nivel}.pdf`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      alert('Erro ao baixar certificado');
+      console.error(err);
     }
-
-    const blob = await res.blob();
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `certificado-${nivel}.pdf`;
-    a.click();
-    window.URL.revokeObjectURL(url);
-  } catch (err) {
-    alert('Erro ao baixar certificado');
-    console.error(err);
   }
-}
 
   useEffect(() => {
     const alunoGuardado = localStorage.getItem('aluno');
@@ -109,6 +110,7 @@ function PainelAluno() {
     <div className="painel-aluno">
       <p>Email: {aluno.email}</p>
       <p>Nível CEFR: {nivel}</p>
+      <button onClick={() => baixarCertificado(nivel)}>Baixar Certificado</button>
       <button onClick={handleLogout}>Sair</button>
 
       <h2>Conteúdos do teu nível ({nivel})</h2>
