@@ -2,6 +2,98 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { conteudosPorNivel } from '../data/conteudos';
 
+const FRASES_TO_BE = [
+  'I _ a student.',
+  'She _ my sister.',
+  'They _ from Angola.',
+  'We _ happy.',
+  'He _ a teacher.',
+  'You _ my friend.',
+  'It _ a book.',
+  'The children _ at school.',
+  'I _ 20 years old.',
+  'My parents _ at home.'
+];
+
+function ExercicioToBe({ token, onEnviado }) {
+  const [respostas, setRespostas] = useState(Array(FRASES_TO_BE.length).fill(''));
+  const [enviando, setEnviando] = useState(false);
+  const [mensagem, setMensagem] = useState('');
+
+  const atualizarResposta = (index, valor) => {
+    const novas = [...respostas];
+    novas[index] = valor;
+    setRespostas(novas);
+  };
+
+  const handleEnviar = async () => {
+    if (respostas.some((r) => !r.trim())) {
+      setMensagem('Preenche todas as respostas antes de enviar.');
+      return;
+    }
+
+    setEnviando(true);
+    setMensagem('');
+
+    const respostaFormatada = respostas
+      .map((r, i) => `${i + 1}.${r.trim()}`)
+      .join(' ');
+
+    try {
+      const res = await fetch('/api/submissoes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          titulo_exercicio: 'Verbo To Be (presente)',
+          resposta: respostaFormatada
+        })
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setMensagem(data.erro || 'Erro ao enviar resposta');
+      } else {
+        setMensagem('Resposta enviada com sucesso!');
+        setRespostas(Array(FRASES_TO_BE.length).fill(''));
+        if (onEnviado) onEnviado();
+      }
+    } catch (err) {
+      setMensagem('Erro no servidor ao enviar resposta');
+    } finally {
+      setEnviando(false);
+    }
+  };
+
+  return (
+    <div className="exercicio-to-be">
+      <p>Completa as frases com am, is ou are:</p>
+      {FRASES_TO_BE.map((frase, index) => {
+        const partes = frase.split('_');
+        return (
+          <div key={index} className="exercicio-linha">
+            <span>{index + 1}. {partes[0]}</span>
+            <input
+              type="text"
+              value={respostas[index]}
+              onChange={(e) => atualizarResposta(index, e.target.value)}
+              maxLength={4}
+              className="exercicio-input"
+            />
+            <span>{partes[1]}</span>
+          </div>
+        );
+      })}
+      <button onClick={handleEnviar} disabled={enviando}>
+        {enviando ? 'A enviar...' : 'Enviar respostas'}
+      </button>
+      {mensagem && <p>{mensagem}</p>}
+    </div>
+  );
+}
+
 function PainelAluno() {
   const [aluno, setAluno] = useState(null);
   const [aberto, setAberto] = useState(null);
@@ -110,6 +202,7 @@ function PainelAluno() {
 
   const nivel = aluno.nivel_cefr || 'A1';
   const conteudos = conteudosPorNivel[nivel] || [];
+  const token = localStorage.getItem('tokenAluno');
 
   return (
     <div className="painel-aluno">
@@ -129,7 +222,7 @@ function PainelAluno() {
           {conteudos.map((item, index) => (
             <li key={index} className="conteudo-item">
               <span className="conteudo-tipo">
-                {item.tipo === 'vídeo' ? '🎬' : item.tipo === 'texto' ? '📝' : '📄'}
+                {item.tipo === 'vídeo' ? '🎬' : item.tipo === 'texto' ? '📝' : item.tipo === 'exercicio-toBe' ? '✏️' : '📄'}
               </span>{' '}
               {item.tipo === 'texto' ? (
                 <>
@@ -141,6 +234,18 @@ function PainelAluno() {
                   </button>
                   {aberto === index && (
                     <pre className="conteudo-texto">{item.conteudo}</pre>
+                  )}
+                </>
+              ) : item.tipo === 'exercicio-toBe' ? (
+                <>
+                  <button
+                    className="conteudo-titulo-btn"
+                    onClick={() => setAberto(aberto === index ? null : index)}
+                  >
+                    {item.titulo}
+                  </button>
+                  {aberto === index && (
+                    <ExercicioToBe token={token} onEnviado={carregarSubmissoes} />
                   )}
                 </>
               ) : (

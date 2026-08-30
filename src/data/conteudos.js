@@ -95,7 +95,7 @@ We are - Nós somos/estamos
 They are - Eles são/estão`
     },
     {
-  tipo: 'texto',
+  tipo: 'exercicio-toBe',
   titulo: 'Exercício: Verbo To Be (presente)',
   conteudo: `Completa as frases com am, is ou are:
 
