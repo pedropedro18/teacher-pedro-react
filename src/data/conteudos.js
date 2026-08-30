@@ -94,6 +94,22 @@ It is - Isto é/está
 We are - Nós somos/estamos
 They are - Eles são/estão`
     },
+    {
+  tipo: 'texto',
+  titulo: 'Exercício: Verbo To Be (presente)',
+  conteudo: `Completa as frases com am, is ou are:
+
+1. I _ a student.
+2. She _ my sister.
+3. They _ from Angola.
+4. We _ happy.
+5. He _ a teacher.
+6. You _ my friend.
+7. It _ a book.
+8. The children _ at school.
+9. I _ 20 years old.
+10. My parents _ at home.`
+}
   
   ],
   A2: [
