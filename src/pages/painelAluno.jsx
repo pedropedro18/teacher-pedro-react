@@ -97,10 +97,6 @@ function ExercicioToBe({ token, onEnviado }) {
 function PainelAluno() {
   const [aluno, setAluno] = useState(null);
   const [aberto, setAberto] = useState(null);
-  const [tituloExercicio, setTituloExercicio] = useState('');
-  const [resposta, setResposta] = useState('');
-  const [enviando, setEnviando] = useState(false);
-  const [mensagem, setMensagem] = useState('');
   const [minhasSubmissoes, setMinhasSubmissoes] = useState([]);
   const [baixando, setBaixando] = useState(false);
   const navigate = useNavigate();
@@ -164,40 +160,6 @@ function PainelAluno() {
     navigate('/aluno/login');
   };
 
-  const handleEnviarResposta = async (e) => {
-    e.preventDefault();
-    if (!tituloExercicio || !resposta) return;
-
-    setEnviando(true);
-    setMensagem('');
-    const token = localStorage.getItem('tokenAluno');
-
-    try {
-      const res = await fetch('/api/submissoes', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({ nivel, titulo_exercicio: tituloExercicio, resposta })
-      });
-      const data = await res.json();
-
-      if (!res.ok) {
-        setMensagem(data.erro || 'Erro ao enviar resposta');
-      } else {
-        setMensagem('Resposta enviada com sucesso!');
-        setTituloExercicio('');
-        setResposta('');
-        carregarSubmissoes();
-      }
-    } catch (err) {
-      setMensagem('Erro no servidor ao enviar resposta');
-    } finally {
-      setEnviando(false);
-    }
-  };
-
   if (!aluno) return <p>A carregar...</p>;
 
   const nivel = aluno.nivel_cefr || 'A1';
@@ -257,25 +219,6 @@ function PainelAluno() {
           ))}
         </ul>
       )}
-
-      <h2>Enviar resposta de exercício</h2>
-      <form onSubmit={handleEnviarResposta} className="form-submissao">
-        <input
-          type="text"
-          placeholder="Título do exercício"
-          value={tituloExercicio}
-          onChange={(e) => setTituloExercicio(e.target.value)}
-        />
-        <textarea
-          placeholder="A tua resposta"
-          value={resposta}
-          onChange={(e) => setResposta(e.target.value)}
-        />
-        <button type="submit" disabled={enviando}>
-          {enviando ? 'A enviar...' : 'Enviar resposta'}
-        </button>
-        {mensagem && <p>{mensagem}</p>}
-      </form>
 
       <h2>As tuas submissões</h2>
       {minhasSubmissoes.length === 0 ? (
