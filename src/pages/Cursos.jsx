@@ -1,5 +1,6 @@
 import React from "react";
 import "./Cursos.css";
+import { useScrollAnimation } from "../utils/useScrollAnimation";
 
 const modalidades = [
   {
@@ -112,9 +113,17 @@ function CardGrid({ items, keyPrefix }) {
 }
 
 export default function Cursos() {
+  const [refModalidades, visibleModalidades] = useScrollAnimation();
+  const [refAulas, visibleAulas] = useScrollAnimation();
+  const [refCompetencias, visibleCompetencias] = useScrollAnimation();
+
   return (
     <main className="cursos-page">
-      <section id="modalidades" className="cursos-section">
+      <section
+        ref={refModalidades}
+        id="modalidades"
+        className={`cursos-section ${visibleModalidades ? "fade-in-visible" : "fade-in-hidden"}`}
+      >
         <h2>Modalidades</h2>
         <p className="cursos-intro">
           Aulas adaptadas ao teu nível e aos teus objectivos, com percursos
@@ -123,7 +132,11 @@ export default function Cursos() {
         <CardGrid items={modalidades} keyPrefix="modalidade" />
       </section>
 
-      <section id="aulas" className="cursos-section">
+      <section
+        ref={refAulas}
+        id="aulas"
+        className={`cursos-section ${visibleAulas ? "fade-in-visible" : "fade-in-hidden"}`}
+      >
         <h2>Aulas</h2>
         <p className="cursos-intro">
           Como funciona o percurso, do primeiro contacto à consolidação do
@@ -132,7 +145,11 @@ export default function Cursos() {
         <CardGrid items={aulas} keyPrefix="aula" />
       </section>
 
-      <section id="competencias" className="cursos-section">
+      <section
+        ref={refCompetencias}
+        id="competencias"
+        className={`cursos-section ${visibleCompetencias ? "fade-in-visible" : "fade-in-hidden"}`}
+      >
         <h2>Competências</h2>
         <p className="cursos-intro">
           Áreas de especialização além do ensino em sala de aula.
