@@ -365,3 +365,19 @@ section {
   font-size: 0.9rem;
   color: #cfe0f5;
 }
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-family: monospace, sans-serif;
+  font-weight: bold;
+  font-size: 1.4rem;
+  color: #2b7fff;
+  border: 2px solid #2b7fff;
+  border-radius: 8px;
+  padding: 2px 10px;
+  text-decoration: none;
+}

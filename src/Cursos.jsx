@@ -1,4 +1,3 @@
-import { useScrollAnimation } from './utils/useScrollAnimation';
 const NIVEIS=[
  { id: 'a1', label: 'A1 . Iniciante', duracao: '8 semanas'},
  { id: 'a2', label: 'A2 . Elementar', duracao: '8 semanas'},
