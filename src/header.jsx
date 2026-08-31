@@ -54,6 +54,10 @@ export default function Header() {
 
   return (
     <header className={`site-header ${open ? 'open' : ''}`}>
+      <Link to="/" className="logo" onClick={() => setOpen(false)}>
+        Tp
+      </Link>
+
       <nav>
         <ul>
           {LINKS.map((link) => (
