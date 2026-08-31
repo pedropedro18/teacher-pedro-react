@@ -1,3 +1,4 @@
+import { useScrollAnimation } from './utils/useScrollAnimation';
 const NIVEIS=[
  { id: 'a1', label: 'A1 . Iniciante', duracao: '8 semanas'},
  { id: 'a2', label: 'A2 . Elementar', duracao: '8 semanas'},
@@ -7,20 +8,23 @@ const NIVEIS=[
  { id: 'c2', label: 'C2 . Proficiente', duracao: '12'},
 
 ];
+
 export default function Cursos(){
+    const [ref, isVisible] = useScrollAnimation();
+
     return(
-        <section id="cursos" className="courses">
+        <section ref={ref} id="cursos" className={`courses ${isVisible ? 'fade-in-visible' : 'fade-in-hidden'}`}>
         <h2>Cursos disponíveis</h2>
         <div className="course-grid">
-           {NIVEIS.map((nivel)=>(
+            {NIVEIS.map((nivel)=>(
             <div key={nivel.id} className="course-card">
                 <h3>{nivel.label}</h3>
                 <p className="course-duracao">{nivel.duracao}</p>
                 <p className="course-preco">{nivel.preco}</p>
                 <a href="#contacto" className="course-btn">Inscrever-me</a>
             </div>
-           ))}  
+            ))}
         </div>
         </section>
         );
-        } 
+    }
