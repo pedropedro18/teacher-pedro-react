@@ -1,6 +1,6 @@
 import React from "react";
 import "./Cursos.css";
-import { useScrollAnimation } from "../utils/useScrollAnimation";
+import { useScrollAnimation } from "../useScrollAnimation";
 
 const modalidades = [
   {
