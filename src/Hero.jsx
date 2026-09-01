@@ -1,34 +1,35 @@
 import { useState, useEffect } from 'react';
 
-function useTypewriter(text, speed = 50, startDelay = 300) {
+function useTypewriterLoop(text, typeSpeed = 50, deleteSpeed = 30, pauseTime = 1500) {
   const [displayed, setDisplayed] = useState('');
-  const [done, setDone] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
-    let i = 0;
-    let interval;
-    const startTimeout = setTimeout(() => {
-      interval = setInterval(() => {
-        i++;
-        setDisplayed(text.slice(0, i));
-        if (i === text.length) {
-          clearInterval(interval);
-          setDone(true);
-        }
+    let timeout;
+
+    if (!isDeleting && displayed === text) {
+      // terminou de escrever → espera e depois começa a apagar
+      timeout = setTimeout(() => setIsDeleting(true), pauseTime);
+    } else if (isDeleting && displayed === '') {
+      // terminou de apagar → recomeça a escrever
+      timeout = setTimeout(() => setIsDeleting(false), 400);
+    } else {
+      const speed = isDeleting ? deleteSpeed : typeSpeed;
+      timeout = setTimeout(() => {
+        setDisplayed(prev =>
+          isDeleting ? prev.slice(0, -1) : text.slice(0, prev.length + 1)
+        );
       }, speed);
-    }, startDelay);
+    }
 
-    return () => {
-      clearTimeout(startTimeout);
-      clearInterval(interval);
-    };
-  }, [text, speed, startDelay]);
+    return () => clearTimeout(timeout);
+  }, [displayed, isDeleting, text, typeSpeed, deleteSpeed, pauseTime]);
 
-  return { displayed, done };
+  return displayed;
 }
 
 export default function Hero() {
-  const { displayed, done } = useTypewriter("Aprenda inglês com o teacher Pedro", 50, 300);
+  const displayed = useTypewriterLoop("Aprenda inglês com o teacher Pedro", 50, 30, 1500);
 
   return (
     <section id="inicio" className="hero">
@@ -36,7 +37,7 @@ export default function Hero() {
         <span className="hero-badge hero-title">✓ Ensino certificado Maple Bear</span>
         <h1 className="hero-title">
           {displayed}
-          <span className={`typewriter-cursor ${done ? 'blink' : ''}`}>|</span>
+          <span className="typewriter-cursor blink">|</span>
         </h1>
         <p className="hero-subtitle">Aulas para todos os níveis, do A1 ao C2</p>
         <div className="hero-buttons hero-cta">
