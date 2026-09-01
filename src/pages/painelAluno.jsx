@@ -97,6 +97,7 @@ function ExercicioToBe({ token, onEnviado }) {
 function PainelAluno() {
   const [aluno, setAluno] = useState(null);
   const [aberto, setAberto] = useState(null);
+  const [abertoExercicio, setAbertoExercicio] = useState(null);
   const [minhasSubmissoes, setMinhasSubmissoes] = useState([]);
   const [baixando, setBaixando] = useState(false);
   const navigate = useNavigate();
@@ -163,8 +164,12 @@ function PainelAluno() {
   if (!aluno) return <p>A carregar...</p>;
 
   const nivel = aluno.nivel_cefr || 'A1';
-  const conteudos = conteudosPorNivel[nivel] || [];
+  const todosConteudos = conteudosPorNivel[nivel] || [];
   const token = localStorage.getItem('tokenAluno');
+
+  // Separa os conteúdos "normais" dos exercícios
+  const conteudos = todosConteudos.filter((item) => item.tipo !== 'exercicio-toBe');
+  const exercicios = todosConteudos.filter((item) => item.tipo === 'exercicio-toBe');
 
   return (
     <div className="painel-aluno">
@@ -184,7 +189,7 @@ function PainelAluno() {
           {conteudos.map((item, index) => (
             <li key={index} className="conteudo-item">
               <span className="conteudo-tipo">
-                {item.tipo === 'vídeo' ? '🎬' : item.tipo === 'texto' ? '📝' : item.tipo === 'exercicio-toBe' ? '✏️' : '📄'}
+                {item.tipo === 'vídeo' ? '🎬' : item.tipo === 'texto' ? '📝' : '📄'}
               </span>{' '}
               {item.tipo === 'texto' ? (
                 <>
@@ -198,18 +203,6 @@ function PainelAluno() {
                     <pre className="conteudo-texto">{item.conteudo}</pre>
                   )}
                 </>
-              ) : item.tipo === 'exercicio-toBe' ? (
-                <>
-                  <button
-                    className="conteudo-titulo-btn"
-                    onClick={() => setAberto(aberto === index ? null : index)}
-                  >
-                    {item.titulo}
-                  </button>
-                  {aberto === index && (
-                    <ExercicioToBe token={token} onEnviado={carregarSubmissoes} />
-                  )}
-                </>
               ) : (
                 <a href={item.link} target="_blank" rel="noopener noreferrer">
                   {item.titulo}
@@ -218,6 +211,30 @@ function PainelAluno() {
             </li>
           ))}
         </ul>
+      )}
+
+      {exercicios.length > 0 && (
+        <>
+          <h2>Exercícios</h2>
+          <ul className="lista-exercicios">
+            {exercicios.map((item, index) => (
+              <li key={index} className="conteudo-item">
+                <span className="conteudo-tipo">✏️</span>{' '}
+                <button
+                  className="conteudo-titulo-btn"
+                  onClick={() =>
+                    setAbertoExercicio(abertoExercicio === index ? null : index)
+                  }
+                >
+                  {item.titulo}
+                </button>
+                {abertoExercicio === index && (
+                  <ExercicioToBe token={token} onEnviado={carregarSubmissoes} />
+                )}
+              </li>
+            ))}
+          </ul>
+        </>
       )}
 
       <h2>As tuas submissões</h2>
