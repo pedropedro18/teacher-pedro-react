@@ -1,69 +1,88 @@
+import { useParams } from 'react-router-dom';
 import { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { exercicios } from './utils/exercicio.js';
+import { exercicios } from './utils/exercicio';
 
-export default function Exercicio() {
+function Exercicio() {
   const { topicoId } = useParams();
-  const navigate = useNavigate();
-  const perguntas = exercicios[topicoId] || [];
+  const lista = exercicios[topicoId] || [];
+  const [respostas, setRespostas] = useState({});
+  const [corrigido, setCorrigido] = useState(false);
 
-  const [respostas, setRespostas] = useState(Array(perguntas.length).fill(''));
-  const [enviado, setEnviado] = useState(false);
-
-  const handleChange = (i, valor) => {
-    const novas = [...respostas];
-    novas[i] = valor;
-    setRespostas(novas);
+  const handleChange = (index, valor) => {
+    setRespostas({ ...respostas, [index]: valor });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const normalizar = (texto) => texto.trim().toLowerCase();
+
+  const acertos = lista.filter(
+    (item, index) => normalizar(respostas[index] || '') === normalizar(item.resposta)
+  ).length;
+
+  const corrigir = async () => {
+    setCorrigido(true);
+
     const token = localStorage.getItem('tokenAluno');
+    if (!token) return;
 
-    await fetch('/api/submissoes', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ topicoId, respostas }),
-    });
-
-    setEnviado(true);
+    try {
+      await fetch('/api/aluno/resultado', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          topico: topicoId,
+          acertos,
+          total: lista.length,
+        }),
+      });
+    } catch (erro) {
+      console.error('Erro ao guardar resultado:', erro);
+    }
   };
 
-  if (!perguntas.length) return <p>Exercício não encontrado.</p>;
+  if (lista.length === 0) {
+    return <p>Exercício não encontrado.</p>;
+  }
 
   return (
-    <div
-      className="exercicio-container"
-      onCopy={(e) => e.preventDefault()}
-      onContextMenu={(e) => e.preventDefault()}
-    >
-      <h2>Exercício: {topicoId.replace(/-/g, ' ')}</h2>
+    <div>
+      <h2>Exercícios: {topicoId}</h2>
 
-      {enviado ? (
-        <p>Resposta enviada! Vais receber a nota e feedback no teu painel.</p>
-      ) : (
-        <form onSubmit={handleSubmit}>
-          {perguntas.map((p, i) => (
-            <div key={i} className="exercicio-pergunta">
-              <label>{p.pergunta}</label>
-              <input
-                type="text"
-                value={respostas[i]}
-                onChange={(e) => handleChange(i, e.target.value)}
-                required
-              />
-            </div>
-          ))}
-          <button type="submit" className="btn-primary">Enviar respostas</button>
-        </form>
+      {lista.map((item, index) => {
+        const respostaAluno = respostas[index] || '';
+        const estaCorreto = normalizar(respostaAluno) === normalizar(item.resposta);
+
+        return (
+          <div key={index} style={{ marginBottom: '1rem' }}>
+            <p>{item.pergunta}</p>
+            <input
+              type="text"
+              value={respostaAluno}
+              onChange={(e) => handleChange(index, e.target.value)}
+              style={{
+                borderColor: corrigido ? (estaCorreto ? 'green' : 'red') : undefined,
+              }}
+            />
+            {corrigido && (
+              <span style={{ marginLeft: '0.5rem', color: estaCorreto ? 'green' : 'red' }}>
+                {estaCorreto ? '✔️ Correto' : `✘ Errado (resposta: ${item.resposta})`}
+              </span>
+            )}
+          </div>
+        );
+      })}
+
+      <button onClick={corrigir}>Corrigir</button>
+
+      {corrigido && (
+        <p>
+          Acertaste {acertos} de {lista.length} perguntas.
+        </p>
       )}
-
-      <button onClick={() => navigate('/aluno/painel')} className="btn-secondary">
-        Voltar ao painel
-      </button>
     </div>
   );
 }
+
+export default Exercicio;

@@ -11,11 +11,11 @@ import { Analytics } from "@vercel/analytics/react";
 import Admin from './pages/Admin';
 import LoginAluno from './pages/LoginAluno';
 import PainelAluno from './pages/painelAluno';
+import ExerciciosAluno from './pages/ExerciciosAluno';
 import Login from './pages/Login';
 import RotaProtegida from './RotaProtegida';
 import Exercicio from './Exercicio';
-
-
+  import RotaProtegidaAluno from './RotaProtegidaAluno';
 function App() {
   return(
     <>
@@ -31,6 +31,9 @@ function App() {
   <Route path="/login-aluno" element={<LoginAluno />} />
   <Route path="/aluno/painel" element={<RotaProtegida><PainelAluno /></RotaProtegida>} />
   <Route path="/aluno/exercicio/:topicoId" element={<RotaProtegida><Exercicio /></RotaProtegida>} />
+<Route path="/admin" element={<RotaProtegida><Admin /></RotaProtegida>} />
+<Route path="/aluno/painel" element={<RotaProtegidaAluno><PainelAluno /></RotaProtegidaAluno>} />
+<Route path="/aluno/exercicio/:topicoId" element={<RotaProtegidaAluno><Exercicio /></RotaProtegidaAluno>} />
 </Routes>
    <Analytics />
     </>
