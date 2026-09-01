@@ -381,3 +381,18 @@ section {
   padding: 2px 10px;
   text-decoration: none;
 }
+.typewriter-cursor {
+  display: inline-block;
+  margin-left: 2px;
+  opacity: 1;
+  animation: none;
+}
+
+.typewriter-cursor.blink {
+  animation: blink-cursor 0.8s step-end infinite;
+}
+
+@keyframes blink-cursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}

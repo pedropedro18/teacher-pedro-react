@@ -1,9 +1,43 @@
-export default function Hero(){
-  return(
+import { useState, useEffect } from 'react';
+
+function useTypewriter(text, speed = 50, startDelay = 300) {
+  const [displayed, setDisplayed] = useState('');
+  const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    let i = 0;
+    let interval;
+    const startTimeout = setTimeout(() => {
+      interval = setInterval(() => {
+        i++;
+        setDisplayed(text.slice(0, i));
+        if (i === text.length) {
+          clearInterval(interval);
+          setDone(true);
+        }
+      }, speed);
+    }, startDelay);
+
+    return () => {
+      clearTimeout(startTimeout);
+      clearInterval(interval);
+    };
+  }, [text, speed, startDelay]);
+
+  return { displayed, done };
+}
+
+export default function Hero() {
+  const { displayed, done } = useTypewriter("Aprenda inglês com o teacher Pedro", 50, 300);
+
+  return (
     <section id="inicio" className="hero">
       <div className="hero-content">
         <span className="hero-badge hero-title">✓ Ensino certificado Maple Bear</span>
-        <h1 className="hero-title">Aprenda inglês com o teacher Pedro</h1>
+        <h1 className="hero-title">
+          {displayed}
+          <span className={`typewriter-cursor ${done ? 'blink' : ''}`}>|</span>
+        </h1>
         <p className="hero-subtitle">Aulas para todos os níveis, do A1 ao C2</p>
         <div className="hero-buttons hero-cta">
           <a href="#contacto" className="btn-primary">Marcar aula</a>
