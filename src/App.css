@@ -490,3 +490,214 @@ html, body {
 .btn-whatsapp:hover {
   transform: translateY(-2px);
 }
+/* ===== Painel do Aluno ===== */
+.painel-aluno {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.painel-aluno h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #1e293b;
+}
+
+.painel-topicos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 2.5rem;
+}
+
+.painel-topico-link {
+  text-decoration: none;
+  background: #2563eb;
+  color: #fff;
+  padding: 0.6rem 1.1rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.painel-vazio {
+  color: #64748b;
+}
+
+.submissoes-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.submissao-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  background: #f8fafc;
+}
+
+.submissao-titulo {
+  font-size: 1.05rem;
+  color: #1e293b;
+}
+
+.submissao-status {
+  margin-top: 0.4rem;
+}
+
+.status-corrigido {
+  color: #16a34a;
+}
+
+.status-pendente {
+  color: #d97706;
+}
+
+/* ===== Página de Exercício ===== */
+.exercicio-page {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.exercicio-page h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: #1e293b;
+}
+
+.exercicio-pergunta {
+  margin-bottom: 1.25rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.exercicio-pergunta p {
+  margin: 0;
+  color: #1e293b;
+}
+
+.exercicio-input {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  font-size: 1rem;
+  margin-top: 0.4rem;
+}
+
+.exercicio-erro {
+  color: #dc2626;
+}
+
+.btn-primario {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  padding: 0.7rem 1.6rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+.btn-primario:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.exercicio-sucesso {
+  max-width: 500px;
+  margin: 4rem auto;
+  text-align: center;
+  padding: 1rem;
+}
+
+.exercicio-sucesso h2 {
+  color: #16a34a;
+}
+
+.exercicio-sucesso p {
+  color: #475569;
+  margin: 1rem 0 2rem;
+}
+
+/* ===== Painel Admin - Submissões ===== */
+.submissoes-admin {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.submissoes-admin h2 {
+  font-size: 1.6rem;
+  margin-bottom: 1.5rem;
+  color: #1e293b;
+}
+
+.submissoes-admin h3.titulo-pendentes {
+  color: #d97706;
+  margin-bottom: 1rem;
+}
+
+.submissoes-admin h3.titulo-corrigidas {
+  color: #16a34a;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.admin-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  background: #f8fafc;
+}
+
+.admin-card p {
+  margin: 0 0 0.3rem;
+}
+
+.admin-resposta {
+  white-space: pre-wrap;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-size: 0.9rem;
+  margin: 0 0 0.75rem;
+}
+
+.admin-nota-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.6rem;
+  align-items: center;
+}
+
+.admin-input {
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  font-size: 0.95rem;
+}
+
+.admin-input-nota {
+  width: 70px;
+}
+
+.admin-textarea {
+  width: 100%;
+  margin-bottom: 0.75rem;
+  font-family: inherit;
+}
+
+.corrigida-item {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid #e2e8f0;
+  color: #475569;
+}
