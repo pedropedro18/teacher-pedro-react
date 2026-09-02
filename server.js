@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
+import resultadoRouter from './api/resultado.js';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -26,6 +27,9 @@ app.use('/api/submissoes', submissoesRouter);
 app.get('/api/alunos/me', verificarTokenAluno, meuPerfil);
 app.use('/api/alunos', verificarToken, alunosRouter);
 app.use('/api', certificadoRouter);
+app.use('/api/aluno', resultadoRouter);
+
+
 
 // Serve os arquivos estáticos do build do React
 app.use(express.static(path.join(__dirname, 'dist')));

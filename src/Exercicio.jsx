@@ -1,44 +1,46 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { exercicios } from './utils/exercicio';
 
 function Exercicio() {
   const { topicoId } = useParams();
+  const navigate = useNavigate();
   const lista = exercicios[topicoId] || [];
   const [respostas, setRespostas] = useState({});
-  const [corrigido, setCorrigido] = useState(false);
+  const [enviado, setEnviado] = useState(false);
+  const [erro, setErro] = useState('');
 
   const handleChange = (index, valor) => {
     setRespostas({ ...respostas, [index]: valor });
   };
 
-  const normalizar = (texto) => texto.trim().toLowerCase();
-
-  const acertos = lista.filter(
-    (item, index) => normalizar(respostas[index] || '') === normalizar(item.resposta)
-  ).length;
-
-  const corrigir = async () => {
-    setCorrigido(true);
-
+  const enviar = async () => {
     const token = localStorage.getItem('tokenAluno');
     if (!token) return;
 
+    const respostaTexto = lista
+      .map((item, index) => `${item.pergunta}\nResposta: ${respostas[index] || '(em branco)'}`)
+      .join('\n\n');
+
     try {
-      await fetch('/api/aluno/resultado', {
+      const res = await fetch('/api/submissoes', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          topico: topicoId,
-          acertos,
-          total: lista.length,
+          nivel: topicoId,
+          titulo_exercicio: topicoId,
+          resposta: respostaTexto,
         }),
       });
-    } catch (erro) {
-      console.error('Erro ao guardar resultado:', erro);
+
+      if (!res.ok) throw new Error('Falha ao enviar');
+
+      setEnviado(true);
+    } catch (e) {
+      setErro('Erro ao enviar a resposta. Tenta novamente.');
     }
   };
 
@@ -46,41 +48,33 @@ function Exercicio() {
     return <p>Exercício não encontrado.</p>;
   }
 
+  if (enviado) {
+    return (
+      <div>
+        <h2>Resposta enviada!</h2>
+        <p>O professor vai corrigir e dar-te feedback em breve.</p>
+        <button onClick={() => navigate('/aluno/painel')}>Voltar ao painel</button>
+      </div>
+    );
+  }
+
   return (
     <div>
       <h2>Exercícios: {topicoId}</h2>
 
-      {lista.map((item, index) => {
-        const respostaAluno = respostas[index] || '';
-        const estaCorreto = normalizar(respostaAluno) === normalizar(item.resposta);
+      {lista.map((item, index) => (
+        <div key={index} style={{ marginBottom: '1rem' }}>
+          <p>{item.pergunta}</p>
+          <input
+            type="text"
+            value={respostas[index] || ''}
+            onChange={(e) => handleChange(index, e.target.value)}
+          />
+        </div>
+      ))}
 
-        return (
-          <div key={index} style={{ marginBottom: '1rem' }}>
-            <p>{item.pergunta}</p>
-            <input
-              type="text"
-              value={respostaAluno}
-              onChange={(e) => handleChange(index, e.target.value)}
-              style={{
-                borderColor: corrigido ? (estaCorreto ? 'green' : 'red') : undefined,
-              }}
-            />
-            {corrigido && (
-              <span style={{ marginLeft: '0.5rem', color: estaCorreto ? 'green' : 'red' }}>
-                {estaCorreto ? '✔️ Correto' : `✘ Errado (resposta: ${item.resposta})`}
-              </span>
-            )}
-          </div>
-        );
-      })}
-
-      <button onClick={corrigir}>Corrigir</button>
-
-      {corrigido && (
-        <p>
-          Acertaste {acertos} de {lista.length} perguntas.
-        </p>
-      )}
+      {erro && <p style={{ color: 'red' }}>{erro}</p>}
+      <button onClick={enviar}>Enviar respostas</button>
     </div>
   );
 }
