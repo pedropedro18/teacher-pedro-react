@@ -1,5 +1,6 @@
+import './App.css';
 import { Routes, Route } from 'react-router-dom';
-import  SubmissoesAdmin  from './pages/SubmissoesAdmin';
+import SubmissoesAdmin from './pages/SubmissoesAdmin';
 import Header from './header';
 import Home from './pages/Home';
 import Cursos from './Cursos';
@@ -38,4 +39,3 @@ function App() {
 }
 
 export default App;
-
