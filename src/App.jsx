@@ -14,6 +14,7 @@ import PainelAluno from './pages/painelAluno';
 import ExerciciosAluno from './pages/ExerciciosAluno';
 import Exercicio from './Exercicio';
 import RotaProtegida from './RotaProtegida';
+import MateriaisAdmin from './pages/MateriaisAdmin';
 
 import RotaProtegidaAluno from './RotaProtegidaAluno';
 
@@ -23,6 +24,7 @@ function App() {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/admin/materiais" element={<RotaProtegida><MateriaisAdmin /></RotaProtegida>} />
         <Route path="/cursos" element={<Cursos />} />
         <Route path="/contacto" element={<Contacto />} />
         <Route path="/blog" element={<Blog />} />

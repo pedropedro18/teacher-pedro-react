@@ -1,10 +1,9 @@
 import express from 'express';
-import db from './db.js'; // ajusta o caminho se o teu db.js estiver noutro sítio
-import { verificarToken } from './auth.js'; // ajusta se vier doutro ficheiro
+import db from './db.js';
+import { verificarToken } from './auth.js';
 
 const router = express.Router();
 
-// GET /api/materiais — aluno (ou admin) lista todos os materiais
 router.get('/', verificarToken, async (req, res) => {
   try {
     const [rows] = await db.query(
@@ -17,7 +16,6 @@ router.get('/', verificarToken, async (req, res) => {
   }
 });
 
-// POST /api/materiais — admin adiciona novo material
 router.post('/', verificarToken, async (req, res) => {
   const { titulo, descricao, link_pdf, link_video, nivel } = req.body;
 
@@ -37,7 +35,31 @@ router.post('/', verificarToken, async (req, res) => {
   }
 });
 
-// DELETE /api/materiais/:id — admin remove um material
+router.put('/:id', verificarToken, async (req, res) => {
+  const { id } = req.params;
+  const { titulo, descricao, link_pdf, link_video, nivel } = req.body;
+
+  if (!titulo) {
+    return res.status(400).json({ erro: 'Título é obrigatório' });
+  }
+
+  try {
+    const [result] = await db.query(
+      'UPDATE materiais SET titulo = ?, descricao = ?, link_pdf = ?, link_video = ?, nivel = ? WHERE id = ?',
+      [titulo, descricao || null, link_pdf || null, link_video || null, nivel || null, id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ erro: 'Material não encontrado' });
+    }
+
+    res.json({ id: Number(id), titulo, descricao, link_pdf, link_video, nivel });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ erro: 'Erro ao editar material' });
+  }
+});
+
 router.delete('/:id', verificarToken, async (req, res) => {
   const { id } = req.params;
 

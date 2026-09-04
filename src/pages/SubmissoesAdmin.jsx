@@ -6,19 +6,44 @@ function SubmissoesAdmin() {
   const [notas, setNotas] = useState({});
   const [feedbacks, setFeedbacks] = useState({});
   const [salvando, setSalvando] = useState(null);
+  const [erro, setErro] = useState(null);
 
   const carregar = async () => {
+    setErro(null);
     const token = localStorage.getItem('token');
-    if (!token) return;
+
+    if (!token) {
+      setErro('Não tens sessão de admin ativa. Faz login novamente.');
+      setSubmissoes([]);
+      setCarregando(false);
+      return;
+    }
 
     try {
       const res = await fetch('/api/submissoes', {
         headers: { Authorization: `Bearer ${token}` },
       });
+
+      if (!res.ok) {
+        console.error('Erro na API:', res.status);
+
+        if (res.status === 401 || res.status === 403) {
+          localStorage.removeItem('token');
+          setErro('Sessão expirada. Faz login novamente.');
+        } else {
+          setErro(`Erro ao carregar submissões (status ${res.status}).`);
+        }
+
+        setSubmissoes([]);
+        return;
+      }
+
       const dados = await res.json();
-      setSubmissoes(dados);
+      setSubmissoes(Array.isArray(dados) ? dados : []);
     } catch (e) {
       console.error('Erro ao carregar submissões:', e);
+      setErro('Erro de rede ao carregar submissões.');
+      setSubmissoes([]);
     } finally {
       setCarregando(false);
     }
@@ -30,10 +55,15 @@ function SubmissoesAdmin() {
 
   const corrigir = async (id) => {
     const token = localStorage.getItem('token');
+    if (!token) {
+      setErro('Não tens sessão de admin ativa. Faz login novamente.');
+      return;
+    }
+
     setSalvando(id);
 
     try {
-      await fetch(`/api/submissoes/${id}`, {
+      const res = await fetch(`/api/submissoes/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -44,15 +74,32 @@ function SubmissoesAdmin() {
           feedback: feedbacks[id] || '',
         }),
       });
+
+      if (!res.ok) {
+        console.error('Erro ao corrigir:', res.status);
+        setErro(`Erro ao guardar correção (status ${res.status}).`);
+        return;
+      }
+
       await carregar();
     } catch (e) {
       console.error('Erro ao corrigir:', e);
+      setErro('Erro de rede ao guardar correção.');
     } finally {
       setSalvando(null);
     }
   };
 
   if (carregando) return <p>A carregar submissões...</p>;
+
+  if (erro) {
+    return (
+      <div>
+        <p style={{ color: 'red' }}>{erro}</p>
+        <button onClick={carregar}>Tentar novamente</button>
+      </div>
+    );
+  }
 
   const pendentes = submissoes.filter((s) => !s.corrigido);
   const corrigidas = submissoes.filter((s) => s.corrigido);
