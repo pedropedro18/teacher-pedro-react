@@ -14,6 +14,7 @@ import PainelAluno from './pages/painelAluno';
 import ExerciciosAluno from './pages/ExerciciosAluno';
 import Exercicio from './Exercicio';
 import RotaProtegida from './RotaProtegida';
+
 import RotaProtegidaAluno from './RotaProtegidaAluno';
 
 function App() {

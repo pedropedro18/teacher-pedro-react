@@ -12,6 +12,8 @@ import certificadoRouter from './api/certificado.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const materiaisRoutes = require('./api/materiais');
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -28,6 +30,7 @@ app.get('/api/alunos/me', verificarTokenAluno, meuPerfil);
 app.use('/api/alunos', verificarToken, alunosRouter);
 app.use('/api', certificadoRouter);
 app.use('/api/aluno', resultadoRouter);
+app.use('/api/materiais', materiaisRoutes);
 
 
 
