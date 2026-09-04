@@ -12,7 +12,7 @@ import certificadoRouter from './api/certificado.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-import materiaisRoutes from './api/materiais';
+import materiaisRoutes from './api/materiais';git
 
 
 const app = express();
