@@ -9,10 +9,11 @@ import submissoesRouter from './api/submissoes.js';
 import { login, verificarToken } from './api/auth.js';
 import { loginAluno, definirPasswordAluno, meuPerfil, verificarTokenAluno } from './api/alunoAuth.js';
 import certificadoRouter from './api/certificado.js';
+import materiaisRoutes from './api/materiais.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-import materiaisRoutes from './api/materiais';git
+
 
 
 const app = express();
