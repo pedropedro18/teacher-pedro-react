@@ -8,7 +8,7 @@ const router = express.Router();
 router.get('/', verificarToken, async (req, res) => {
   try {
     const [rows] = await db.query(
-      'SELECT id, titulo, descricao, link_pdf, nivel, data_criacao FROM materiais ORDER BY data_criacao DESC'
+      'SELECT id, titulo, descricao, link_pdf, link_video, nivel, data_criacao FROM materiais ORDER BY data_criacao DESC'
     );
     res.json(rows);
   } catch (err) {
@@ -19,18 +19,18 @@ router.get('/', verificarToken, async (req, res) => {
 
 // POST /api/materiais — admin adiciona novo material
 router.post('/', verificarToken, async (req, res) => {
-  const { titulo, descricao, link_pdf, nivel } = req.body;
+  const { titulo, descricao, link_pdf, link_video, nivel } = req.body;
 
-  if (!titulo || !link_pdf) {
-    return res.status(400).json({ erro: 'Título e link do PDF são obrigatórios' });
+  if (!titulo) {
+    return res.status(400).json({ erro: 'Título é obrigatório' });
   }
 
   try {
     const [result] = await db.query(
-      'INSERT INTO materiais (titulo, descricao, link_pdf, nivel, data_criacao) VALUES (?, ?, ?, ?, NOW())',
-      [titulo, descricao || null, link_pdf, nivel || null]
+      'INSERT INTO materiais (titulo, descricao, link_pdf, link_video, nivel, data_criacao) VALUES (?, ?, ?, ?, ?, NOW())',
+      [titulo, descricao || null, link_pdf || null, link_video || null, nivel || null]
     );
-    res.status(201).json({ id: result.insertId, titulo, descricao, link_pdf, nivel });
+    res.status(201).json({ id: result.insertId, titulo, descricao, link_pdf, link_video, nivel });
   } catch (err) {
     console.error(err);
     res.status(500).json({ erro: 'Erro ao adicionar material' });
