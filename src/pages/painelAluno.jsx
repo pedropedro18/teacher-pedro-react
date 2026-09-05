@@ -2,9 +2,12 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { exercicios } from '../utils/exercicio';
 
+const NIVEIS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
+
 function PainelAluno() {
   const [submissoes, setSubmissoes] = useState([]);
   const [materiais, setMateriais] = useState([]);
+  const [nivelAtivo, setNivelAtivo] = useState('Todos');
   const topicos = Object.keys(exercicios);
 
   useEffect(() => {
@@ -27,6 +30,11 @@ function PainelAluno() {
     carregar();
   }, []);
 
+  const materiaisFiltrados =
+    nivelAtivo === 'Todos'
+      ? materiais
+      : materiais.filter((m) => m.nivel === nivelAtivo);
+
   return (
     <div>
       <h2>Exercícios disponíveis</h2>
@@ -39,14 +47,62 @@ function PainelAluno() {
       </ul>
 
       <h2>Materiais de Estudo</h2>
-      {materiais.length === 0 ? (
-        <p>Ainda não há materiais disponíveis.</p>
+
+      {/* Filtro por nível */}
+      <div
+        style={{
+          display: 'flex',
+          gap: '0.5rem',
+          overflowX: 'auto',
+          marginBottom: '1rem',
+          paddingBottom: '4px',
+        }}
+      >
+        {['Todos', ...NIVEIS].map((nivel) => (
+          <button
+            key={nivel}
+            onClick={() => setNivelAtivo(nivel)}
+            style={{
+              flexShrink: 0,
+              padding: '6px 14px',
+              borderRadius: '20px',
+              border: '1px solid #444',
+              cursor: 'pointer',
+              background: nivel === nivelAtivo ? '#378ADD' : 'transparent',
+              color: nivel === nivelAtivo ? '#fff' : '#ccc',
+              fontWeight: nivel === nivelAtivo ? 600 : 400,
+            }}
+          >
+            {nivel}
+          </button>
+        ))}
+      </div>
+
+      {materiaisFiltrados.length === 0 ? (
+        <p>
+          {materiais.length === 0
+            ? 'Ainda não há materiais disponíveis.'
+            : 'Nenhum material encontrado para este nível.'}
+        </p>
       ) : (
         <ul>
-          {materiais.map((m) => (
+          {materiaisFiltrados.map((m) => (
             <li key={m.id} style={{ marginBottom: '1.5rem' }}>
               <strong>{m.titulo}</strong>
-              {m.nivel && <span> ({m.nivel})</span>}
+              {m.nivel && (
+                <span
+                  style={{
+                    marginLeft: '0.5rem',
+                    fontSize: '0.8rem',
+                    padding: '2px 8px',
+                    borderRadius: '10px',
+                    background: '#1d4ed8',
+                    color: '#fff',
+                  }}
+                >
+                  {m.nivel}
+                </span>
+              )}
               {m.descricao && <p style={{ margin: '0.2rem 0' }}>{m.descricao}</p>}
 
               {m.link_pdf && (
