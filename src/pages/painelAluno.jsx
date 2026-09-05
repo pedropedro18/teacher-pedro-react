@@ -2,12 +2,15 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { exercicios } from '../utils/exercicio';
 
+const NIVEIS_CEFR = ['Todos', 'A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
+
 function PainelAluno() {
   const [submissoes, setSubmissoes] = useState([]);
   const [materiais, setMateriais] = useState([]);
-  const [respostas, setRespostas] = useState({}); // guarda o texto de cada textarea por material
-  const [enviando, setEnviando] = useState(null); // id do material a ser enviado
+  const [respostas, setRespostas] = useState({});
+  const [enviando, setEnviando] = useState(null);
   const [mensagem, setMensagem] = useState('');
+  const [nivelSelecionado, setNivelSelecionado] = useState('Todos');
   const topicos = Object.keys(exercicios);
 
   const carregarSubmissoes = async (token) => {
@@ -74,7 +77,7 @@ function PainelAluno() {
 
       setMensagem('Resposta enviada com sucesso!');
       setRespostas((prev) => ({ ...prev, [material.id]: '' }));
-      await carregarSubmissoes(token); // atualiza a lista de submissões
+      await carregarSubmissoes(token);
     } catch (erro) {
       console.error('Erro ao enviar resposta:', erro);
       setMensagem('Erro no servidor ao enviar resposta.');
@@ -83,25 +86,43 @@ function PainelAluno() {
     }
   };
 
+  const materiaisFiltrados =
+    nivelSelecionado === 'Todos'
+      ? materiais
+      : materiais.filter((m) => m.nivel === nivelSelecionado);
+
   return (
     <div>
-      <h2>Exercícios disponíveis</h2>
-      <ul>
-        {topicos.map((topico) => (
-          <li key={topico}>
-            <Link to={`/aluno/exercicio/${topico}`}>{topico}</Link>
-          </li>
-        ))}
-      </ul>
-
+      {/* ===== MATERIAIS DE ESTUDO ===== */}
       <h2>Materiais de Estudo</h2>
+
+      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
+        {NIVEIS_CEFR.map((nivel) => (
+          <button
+            key={nivel}
+            onClick={() => setNivelSelecionado(nivel)}
+            style={{
+              padding: '0.4rem 1rem',
+              borderRadius: '20px',
+              border: 'none',
+              cursor: 'pointer',
+              background: nivelSelecionado === nivel ? '#2e9bff' : '#333',
+              color: '#fff',
+              fontWeight: nivelSelecionado === nivel ? 'bold' : 'normal',
+            }}
+          >
+            {nivel}
+          </button>
+        ))}
+      </div>
+
       {mensagem && <p style={{ color: '#7CFC00' }}>{mensagem}</p>}
 
-      {materiais.length === 0 ? (
-        <p>Ainda não há materiais disponíveis.</p>
+      {materiaisFiltrados.length === 0 ? (
+        <p>Nenhum material encontrado para este nível.</p>
       ) : (
         <ul>
-          {materiais.map((m) => (
+          {materiaisFiltrados.map((m) => (
             <li key={m.id} style={{ marginBottom: '2rem' }}>
               <strong>{m.titulo}</strong>
               {m.nivel && <span> ({m.nivel})</span>}
@@ -165,6 +186,21 @@ function PainelAluno() {
         </ul>
       )}
 
+      <hr style={{ margin: '2rem 0' }} />
+
+      {/* ===== EXERCÍCIOS AUTOMÁTICOS ===== */}
+      <h2>Exercícios disponíveis</h2>
+      <ul>
+        {topicos.map((topico) => (
+          <li key={topico}>
+            <Link to={`/aluno/exercicio/${topico}`}>{topico}</Link>
+          </li>
+        ))}
+      </ul>
+
+      <hr style={{ margin: '2rem 0' }} />
+
+      {/* ===== SUBMISSÕES DO ALUNO ===== */}
       <h2>As tuas submissões</h2>
       {submissoes.length === 0 ? (
         <p>Ainda não enviaste nenhum exercício.</p>

@@ -86,6 +86,25 @@ export default function Admin() {
     }
   }
 
+  async function apagarSubmissao(id) {
+    if (!window.confirm('Tens a certeza que queres apagar esta submissão?')) return;
+
+    try {
+      const res = await fetch(`/api/submissoes/${id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        alert(data.erro || 'Erro ao apagar submissão');
+        return;
+      }
+      setSubmissoes((prev) => prev.filter((s) => s.id !== id));
+    } catch (err) {
+      console.error('Erro ao apagar submissão:', err);
+    }
+  }
+
   function handleChange(e) {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -328,6 +347,10 @@ export default function Admin() {
                     <button onClick={() => handleCorrigir(s.id)}>Corrigir</button>
                   </div>
                 )}
+
+                <button onClick={() => apagarSubmissao(s.id)} className="btn-apagar">
+                  Apagar
+                </button>
               </li>
             ))}
           </ul>

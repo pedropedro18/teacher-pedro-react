@@ -115,6 +115,7 @@ router.put('/:id', verificarToken, async (req, res) => {
     console.error('Erro ao corrigir submissão:', erro);
     res.status(500).json({ erro: 'Erro no servidor ao corrigir submissão' });
   }
+
 });
 
 export default router;
