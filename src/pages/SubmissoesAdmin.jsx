@@ -3,64 +3,49 @@ import { useEffect, useState } from 'react';
 function SubmissoesAdmin() {
   const [submissoes, setSubmissoes] = useState([]);
   const [carregando, setCarregando] = useState(true);
-  const [notas, setNotas] = useState({});
-  const [feedbacks, setFeedbacks] = useState({});
+  const [notas, setNotas] = useState({});       // valor da nota por submissão (enquanto edita)
+  const [feedbacks, setFeedbacks] = useState({}); // valor do feedback por submissão (enquanto edita)
   const [salvando, setSalvando] = useState(null);
-  const [erro, setErro] = useState(null);
+  const [mensagem, setMensagem] = useState('');
 
-  const carregar = async () => {
-    setErro(null);
-    const token = localStorage.getItem('token');
+  const carregarSubmissoes = async () => {
+    const token = localStorage.getItem('tokenAdmin'); // ajusta ao nome real usado no login admin
+    if (!token) return;
 
-    if (!token) {
-      setErro('Não tens sessão de admin ativa. Faz login novamente.');
-      setSubmissoes([]);
-      setCarregando(false);
-      return;
-    }
-
+    setCarregando(true);
     try {
       const res = await fetch('/api/submissoes', {
         headers: { Authorization: `Bearer ${token}` },
       });
-
-      if (!res.ok) {
-        console.error('Erro na API:', res.status);
-
-        if (res.status === 401 || res.status === 403) {
-          localStorage.removeItem('token');
-          setErro('Sessão expirada. Faz login novamente.');
-        } else {
-          setErro(`Erro ao carregar submissões (status ${res.status}).`);
-        }
-
-        setSubmissoes([]);
-        return;
-      }
-
       const dados = await res.json();
-      setSubmissoes(Array.isArray(dados) ? dados : []);
-    } catch (e) {
-      console.error('Erro ao carregar submissões:', e);
-      setErro('Erro de rede ao carregar submissões.');
-      setSubmissoes([]);
+      setSubmissoes(dados);
+
+      // pré-preenche os campos de edição com valores já existentes
+      const notasIniciais = {};
+      const feedbacksIniciais = {};
+      dados.forEach((s) => {
+        notasIniciais[s.id] = s.nota ?? '';
+        feedbacksIniciais[s.id] = s.feedback ?? '';
+      });
+      setNotas(notasIniciais);
+      setFeedbacks(feedbacksIniciais);
+    } catch (erro) {
+      console.error('Erro ao carregar submissões:', erro);
     } finally {
       setCarregando(false);
     }
   };
 
   useEffect(() => {
-    carregar();
+    carregarSubmissoes();
   }, []);
 
-  const corrigir = async (id) => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      setErro('Não tens sessão de admin ativa. Faz login novamente.');
-      return;
-    }
+  const corrigirSubmissao = async (id) => {
+    const token = localStorage.getItem('tokenAdmin');
+    if (!token) return;
 
     setSalvando(id);
+    setMensagem('');
 
     try {
       const res = await fetch(`/api/submissoes/${id}`, {
@@ -70,21 +55,23 @@ function SubmissoesAdmin() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          nota: notas[id] || null,
-          feedback: feedbacks[id] || '',
+          nota: notas[id] === '' ? null : Number(notas[id]),
+          feedback: feedbacks[id],
         }),
       });
 
+      const dados = await res.json();
+
       if (!res.ok) {
-        console.error('Erro ao corrigir:', res.status);
-        setErro(`Erro ao guardar correção (status ${res.status}).`);
+        setMensagem(dados.erro || 'Erro ao corrigir submissão.');
         return;
       }
 
-      await carregar();
-    } catch (e) {
-      console.error('Erro ao corrigir:', e);
-      setErro('Erro de rede ao guardar correção.');
+      setMensagem('Correção guardada com sucesso!');
+      await carregarSubmissoes(); // atualiza a lista com os dados guardados
+    } catch (erro) {
+      console.error('Erro ao corrigir submissão:', erro);
+      setMensagem('Erro no servidor ao corrigir submissão.');
     } finally {
       setSalvando(null);
     }
@@ -92,65 +79,87 @@ function SubmissoesAdmin() {
 
   if (carregando) return <p>A carregar submissões...</p>;
 
-  if (erro) {
-    return (
-      <div>
-        <p style={{ color: 'red' }}>{erro}</p>
-        <button onClick={carregar}>Tentar novamente</button>
-      </div>
-    );
-  }
-
-  const pendentes = submissoes.filter((s) => !s.corrigido);
-  const corrigidas = submissoes.filter((s) => s.corrigido);
-
   return (
     <div>
-      <h2>Submissões dos alunos</h2>
+      <h2>Submissões dos alunos ({submissoes.length})</h2>
+      {mensagem && <p style={{ color: '#7CFC00' }}>{mensagem}</p>}
 
-      <h3>Pendentes ({pendentes.length})</h3>
-      {pendentes.length === 0 ? (
-        <p>Nenhuma submissão pendente.</p>
+      {submissoes.length === 0 ? (
+        <p>Ainda não há submissões.</p>
       ) : (
-        pendentes.map((s) => (
-          <div key={s.id} style={{ border: '1px solid #ccc', padding: '1rem', marginBottom: '1rem' }}>
-            <p><strong>Aluno:</strong> {s.aluno_nome}</p>
-            <p><strong>Tópico:</strong> {s.titulo_exercicio}</p>
-            <pre style={{ whiteSpace: 'pre-wrap', background: '#f5f5f5', padding: '0.5rem' }}>
-              {s.resposta}
-            </pre>
-            <div>
-              <label>Nota: </label>
-              <input
-                type="number"
-                min="0"
-                max="20"
-                value={notas[s.id] || ''}
-                onChange={(e) => setNotas({ ...notas, [s.id]: e.target.value })}
-              />
-            </div>
-            <div>
-              <label>Feedback: </label>
-              <textarea
-                value={feedbacks[s.id] || ''}
-                onChange={(e) => setFeedbacks({ ...feedbacks, [s.id]: e.target.value })}
-                rows={3}
-                style={{ width: '100%' }}
-              />
-            </div>
-            <button onClick={() => corrigir(s.id)} disabled={salvando === s.id}>
-              {salvando === s.id ? 'A guardar...' : 'Guardar correção'}
-            </button>
-          </div>
-        ))
-      )}
+        <ul style={{ listStyle: 'none', padding: 0 }}>
+          {submissoes.map((s) => (
+            <li
+              key={s.id}
+              style={{
+                border: '1px solid #444',
+                borderRadius: '8px',
+                padding: '1rem',
+                marginBottom: '1rem',
+              }}
+            >
+              <p>
+                <strong>{s.aluno_nome}</strong> — {s.titulo_exercicio}{' '}
+                {s.nivel && <span>({s.nivel})</span>}
+              </p>
+              <p style={{ fontSize: '0.85rem', color: '#aaa' }}>
+                Enviado em: {new Date(s.data_envio).toLocaleString('pt-PT')}
+              </p>
 
-      <h3>Já corrigidas ({corrigidas.length})</h3>
-      {corrigidas.map((s) => (
-        <div key={s.id} style={{ marginBottom: '0.5rem' }}>
-          <strong>{s.aluno_nome}</strong> — {s.titulo_exercicio} — Nota: {s.nota ?? 'N/A'}
-        </div>
-      ))}
+              <p>
+                <strong>Resposta do aluno:</strong>
+              </p>
+              <p style={{ whiteSpace: 'pre-wrap', background: '#222', padding: '0.5rem', borderRadius: '4px' }}>
+                {s.resposta}
+              </p>
+
+              <div style={{ marginTop: '0.8rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                <div>
+                  <label>
+                    Nota:{' '}
+                    <input
+                      type="number"
+                      min="0"
+                      max="20"
+                      value={notas[s.id] ?? ''}
+                      onChange={(e) =>
+                        setNotas((prev) => ({ ...prev, [s.id]: e.target.value }))
+                      }
+                      style={{ width: '60px' }}
+                    />
+                  </label>
+                </div>
+
+                <div style={{ flex: 1, minWidth: '250px' }}>
+                  <label>
+                    Feedback:{' '}
+                    <input
+                      type="text"
+                      value={feedbacks[s.id] ?? ''}
+                      onChange={(e) =>
+                        setFeedbacks((prev) => ({ ...prev, [s.id]: e.target.value }))
+                      }
+                      style={{ width: '100%' }}
+                    />
+                  </label>
+                </div>
+              </div>
+
+              <button
+                onClick={() => corrigirSubmissao(s.id)}
+                disabled={salvando === s.id}
+                style={{ marginTop: '0.6rem' }}
+              >
+                {salvando === s.id ? 'A guardar...' : s.corrigido ? 'Atualizar correção' : 'Corrigir'}
+              </button>
+
+              {s.corrigido && (
+                <span style={{ marginLeft: '0.8rem', color: '#7CFC00' }}>✓ Já corrigido</span>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

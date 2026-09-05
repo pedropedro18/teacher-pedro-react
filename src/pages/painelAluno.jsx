@@ -2,24 +2,28 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { exercicios } from '../utils/exercicio';
 
-const NIVEIS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
-
 function PainelAluno() {
   const [submissoes, setSubmissoes] = useState([]);
   const [materiais, setMateriais] = useState([]);
-  const [nivelAtivo, setNivelAtivo] = useState('Todos');
+  const [respostas, setRespostas] = useState({}); // guarda o texto de cada textarea por material
+  const [enviando, setEnviando] = useState(null); // id do material a ser enviado
+  const [mensagem, setMensagem] = useState('');
   const topicos = Object.keys(exercicios);
+
+  const carregarSubmissoes = async (token) => {
+    const resSubmissoes = await fetch('/api/submissoes/minhas', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const dadosSubmissoes = await resSubmissoes.json();
+    setSubmissoes(dadosSubmissoes);
+  };
 
   useEffect(() => {
     const carregar = async () => {
       const token = localStorage.getItem('tokenAluno');
       if (!token) return;
 
-      const resSubmissoes = await fetch('/api/submissoes/minhas', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const dadosSubmissoes = await resSubmissoes.json();
-      setSubmissoes(dadosSubmissoes);
+      await carregarSubmissoes(token);
 
       const resMateriais = await fetch('/api/materiais', {
         headers: { Authorization: `Bearer ${token}` },
@@ -30,10 +34,54 @@ function PainelAluno() {
     carregar();
   }, []);
 
-  const materiaisFiltrados =
-    nivelAtivo === 'Todos'
-      ? materiais
-      : materiais.filter((m) => m.nivel === nivelAtivo);
+  const handleRespostaChange = (materialId, valor) => {
+    setRespostas((prev) => ({ ...prev, [materialId]: valor }));
+  };
+
+  const enviarResposta = async (material) => {
+    const resposta = respostas[material.id]?.trim();
+    if (!resposta) {
+      setMensagem('Escreve uma resposta antes de enviar.');
+      return;
+    }
+
+    const token = localStorage.getItem('tokenAluno');
+    if (!token) return;
+
+    setEnviando(material.id);
+    setMensagem('');
+
+    try {
+      const res = await fetch('/api/submissoes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          nivel: material.nivel,
+          titulo_exercicio: material.titulo,
+          resposta,
+        }),
+      });
+
+      const dados = await res.json();
+
+      if (!res.ok) {
+        setMensagem(dados.erro || 'Erro ao enviar resposta.');
+        return;
+      }
+
+      setMensagem('Resposta enviada com sucesso!');
+      setRespostas((prev) => ({ ...prev, [material.id]: '' }));
+      await carregarSubmissoes(token); // atualiza a lista de submissões
+    } catch (erro) {
+      console.error('Erro ao enviar resposta:', erro);
+      setMensagem('Erro no servidor ao enviar resposta.');
+    } finally {
+      setEnviando(null);
+    }
+  };
 
   return (
     <div>
@@ -47,62 +95,16 @@ function PainelAluno() {
       </ul>
 
       <h2>Materiais de Estudo</h2>
+      {mensagem && <p style={{ color: '#7CFC00' }}>{mensagem}</p>}
 
-      {/* Filtro por nível */}
-      <div
-        style={{
-          display: 'flex',
-          gap: '0.5rem',
-          overflowX: 'auto',
-          marginBottom: '1rem',
-          paddingBottom: '4px',
-        }}
-      >
-        {['Todos', ...NIVEIS].map((nivel) => (
-          <button
-            key={nivel}
-            onClick={() => setNivelAtivo(nivel)}
-            style={{
-              flexShrink: 0,
-              padding: '6px 14px',
-              borderRadius: '20px',
-              border: '1px solid #444',
-              cursor: 'pointer',
-              background: nivel === nivelAtivo ? '#378ADD' : 'transparent',
-              color: nivel === nivelAtivo ? '#fff' : '#ccc',
-              fontWeight: nivel === nivelAtivo ? 600 : 400,
-            }}
-          >
-            {nivel}
-          </button>
-        ))}
-      </div>
-
-      {materiaisFiltrados.length === 0 ? (
-        <p>
-          {materiais.length === 0
-            ? 'Ainda não há materiais disponíveis.'
-            : 'Nenhum material encontrado para este nível.'}
-        </p>
+      {materiais.length === 0 ? (
+        <p>Ainda não há materiais disponíveis.</p>
       ) : (
         <ul>
-          {materiaisFiltrados.map((m) => (
-            <li key={m.id} style={{ marginBottom: '1.5rem' }}>
+          {materiais.map((m) => (
+            <li key={m.id} style={{ marginBottom: '2rem' }}>
               <strong>{m.titulo}</strong>
-              {m.nivel && (
-                <span
-                  style={{
-                    marginLeft: '0.5rem',
-                    fontSize: '0.8rem',
-                    padding: '2px 8px',
-                    borderRadius: '10px',
-                    background: '#1d4ed8',
-                    color: '#fff',
-                  }}
-                >
-                  {m.nivel}
-                </span>
-              )}
+              {m.nivel && <span> ({m.nivel})</span>}
               {m.descricao && <p style={{ margin: '0.2rem 0' }}>{m.descricao}</p>}
 
               {m.link_pdf && (
@@ -139,6 +141,25 @@ function PainelAluno() {
                   />
                 </div>
               )}
+
+              {/* Formulário de submissão */}
+              <div style={{ marginTop: '0.8rem' }}>
+                <textarea
+                  placeholder="Escreve aqui a tua resposta..."
+                  value={respostas[m.id] || ''}
+                  onChange={(e) => handleRespostaChange(m.id, e.target.value)}
+                  rows={4}
+                  style={{ width: '100%', maxWidth: '640px' }}
+                />
+                <br />
+                <button
+                  onClick={() => enviarResposta(m)}
+                  disabled={enviando === m.id}
+                  style={{ marginTop: '0.5rem' }}
+                >
+                  {enviando === m.id ? 'A enviar...' : 'Submeter resposta'}
+                </button>
+              </div>
             </li>
           ))}
         </ul>

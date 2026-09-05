@@ -1,6 +1,5 @@
 import './App.css';
 import { Routes, Route } from 'react-router-dom';
-import SubmissoesAdmin from './pages/SubmissoesAdmin';
 import Header from './header';
 import Home from './pages/Home';
 import Cursos from './Cursos';
@@ -28,7 +27,6 @@ function App() {
         <Route path="/cursos" element={<Cursos />} />
         <Route path="/contacto" element={<Contacto />} />
         <Route path="/blog" element={<Blog />} />
-        <Route path="/admin/Submissoes" element={<RotaProtegida><SubmissoesAdmin /></RotaProtegida>} />
         <Route path="/blog/:slug" element={<BlogPost />} />
         <Route path="/admin" element={<RotaProtegida><Admin /></RotaProtegida>} />
         <Route path="/login" element={<Login />} />

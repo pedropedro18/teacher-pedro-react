@@ -1,10 +1,10 @@
 // api/submissoes.js
-import expres from 'express';
+import express from 'express';
 import jwt from 'jsonwebtoken';
 import db from './db.js';
 import { verificarToken } from './auth.js';
 
-const router = expres.Router();
+const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET; // mesmo segredo usado no login do aluno
 
 // --- Middleware: verifica token do ALUNO ---
