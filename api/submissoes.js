@@ -115,7 +115,28 @@ router.put('/:id', verificarToken, async (req, res) => {
     console.error('Erro ao corrigir submissão:', erro);
     res.status(500).json({ erro: 'Erro no servidor ao corrigir submissão' });
   }
+});
 
+// --- DELETE /api/submissoes/:id ---
+// Admin apaga uma submissão
+router.delete('/:id', verificarToken, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const [resultado] = await db.query(
+      `DELETE FROM submissoes WHERE id = ?`,
+      [id]
+    );
+
+    if (resultado.affectedRows === 0) {
+      return res.status(404).json({ erro: 'Submissão não encontrada' });
+    }
+
+    res.json({ mensagem: 'Submissão apagada com sucesso' });
+  } catch (erro) {
+    console.error('Erro ao apagar submissão:', erro);
+    res.status(500).json({ erro: 'Erro no servidor ao apagar submissão' });
+  }
 });
 
 export default router;
