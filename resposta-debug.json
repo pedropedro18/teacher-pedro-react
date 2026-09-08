@@ -1,0 +1,32 @@
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "{\n  \"original_text\": \"I go to school yesterday and I seen my friends there.\",\n  \"corrected_text\": \"I went to school yesterday and I saw my friends there.\",\n  \"level\": \"A2\",\n  \"corrections\": [\n    {\n      \"original\": \"go\",\n      \"correction\": \"went\",\n      \"explanation\": \"Como você está falando sobre o passado ('yesterday'), precisa usar o Simple Past do verbo 'go', que é 'went'.\"\n    },\n    {\n      \"original\": \"seen\",\n      \"correction\": \"saw\",\n      \"explanation\": \"O passado simples do verbo 'see' é 'saw'. A palavra 'seen' é o particípio (usado com 'have'/'had').\"\n    }\n  ],\n  \"feedback\": \"Muito bem! A sua mensagem foi compreendida perfeitamente. Apenas atenção ao uso dos verbos no passado simples (Past Simple) quando a frase indicar um tempo definido que já acabou, como 'yesterday'. Continue o bom trabalho!\"\n}",
+            "thoughtSignature": "EvIPCu8PARFNMg+AhoQLw5RcPEcAn+iF11+nsT/SS4eSZKEH87LYzTywjv1bu2c/7NOoL7LzRw0/0/jujDdbOdFdxB0kbxTA+fO1xEFStyXnmm7hYX3F/NB1TuYB4wG+GfA5j93YIEbIETx1wv7qo+t7gW/Y5KyL/FoSG2dazAbfDM18iuQJ+LDzIKWheALa02HE7KhKhy15amPpNqAfJxhPXdqrlfxKfbq52h4WCym/kfsZacE5pDPB21DAi8Py4YyMf5rRhx+MERa6UEqA60aAA01njZlwlw9+ByGRuCAg+6mC9hVDNY7F4hI5YMTSnqB+2YRqUMrhoilFSDlgMzGrDnAOHrAeQtBAer27i1L3v5ORb/MtPaZgrRhoogqFSzrFusOSiKHFUSbgm4aIv1+bcoY9Xml45AX+JzjiQ2ymSegZFmuVCYrUF1ZwOx/Wuc6nwFDmA3M/opCmFWYhcvpbrz8rBUfHqOMBL0+IQwOpwvHRQn0thR9A8LxvJDew7crWzrPpvx6A9S77SjRzePwF0pCnqddfgqH4QBhECzY3XYemnDQ85mD9xfe0QQj7eL4ciL2G8/m09kqdTZfo6xL5bR7ddCu2g1pIh98HLkO5rGWk2DL78aFie11Goijr6Iv/XjCkOoX6xy4oK5vHHsik+jtumRmnazkZtvMqsfFiR1GNBAcSybTF/9ogBNsOSA5CsNxxX4VLngOZBYdwikBrnZ3cEggzjHRhuQBeSMPS+nV3YVM16A2MmKMNj1ZKXxjOd+iCUUYY/wI+pBfOeAr4yXpra1OqrnM8AavI0HqFHKB++VEgFCUbEjIfUOItrSnlGSvcrgEERJrfRoEc4G75EynV5bsc7TmOZ28eydWX0aLZc6Bpgn7V7j8ntXlXbEfG7j+e8nT8gavaresMuaZryZhI+BYY1+6u76syrzZOaIsJGOBN3kwsUsqU8WnE8016q7KGVgGpQING8EBUB2ttY+mPi4EUUYgDOl/QraktMIe2nXaBD29awlnQZ3u0ShcFKnGb3YXQDf+9VPYwwH2T4sSZxKutYAaEpSwmKBcjHRwEqzuVEaKVS3xHHbdIs1ToPQRPPTiXOxoRerhCVprEQmlbaMzoRRyLvQ7FlYZu4xMMVOdS3fM0sHQdOy8SzP7RZCfkG6cuFztaFpsaWYm4l9VfJXkJ+4IifQjh7mIeYolLgfZZ2dc9/YqW6zIQH81tPs4hC066EB572j7LOCR8xSOtSBgveZOQM9P0TOX39+vThJslqtYE/7AO1qBwhku5xqvg74x5Czo7kP4V/L+5npG+GKhdcYRpR42n2zM0tqeptnLTec1O7TeWBwxGZKOOT9Qbl2I/zVVoqE7ikohblk0Z91b8DdzFzE20+Ln2QRckx16Y4plfKNBvf21F0JVzzz3SQC0JsJo/BkqOvmFEyDRAGZKhzrhMS4A1YQXNzCMzDjs50TjO8gUOjU3kSmJRYETmodYWtEXhzlnjKo7+McluFgMZN8hiwLWk1eFCiZOFXKNiTZEoYeKRw+KRkwqnjEtyY/8qI0QieGwQ92UmnWbs7TCFopGWYEl8irdg7n6nqGSedmltTsDlHxOU1JC0ihF6xnq65z4HJ8xieD1PMDhkhs66LSBt/GBYZkyOCtx+Cmfn3c2HBq+NMzTxmJAht0pWDI8OvTB/osK98MBbRbOfc64x7McuL0x0XQQ7pV+UlVQXt1CvFEuYZ0x76UPNNSIdjjjyhOg5L9qSk1KXoZwjBDov1HQtrLmZeddRI/Qfui6C/+mjS7iGA4pThVXadcNWU5qRwhcZljDCU+aSmbY/zhNvifAVhFqwFiPDYDpiPQDe+gFrAWqXlZ3mAYuMCOJmkHvAjoCYmthvBH+Tx/AaN/nUW8qnXg2Xp5dc+DoXlBQ1/PH1evIJEz9FkCxDnyYYsa9Sk1yxoUbkpjpcLTu0Pk+f0ibxz4HbNjpoHDOS40MqhoNpr6Ayo9C7s9JlrahSbJ7CD8Uok6Nwu6mBw4JnHSxrd8SaxcFKh78RWG6+FcceTFogR4aAnqA1HGtZX6Ni5jC+kSaE2wOeZSQgIHhp25SKaUYgVPgyZwasjUqc2eKbtKNb7gXT4SyWe+nWK3/PXXdp7Q9XqpezoZe3aXzenYl7eVoW/fuP4HppWOEjPKdUEaWwzI1NKicoNBHrwcvE2L0Otb2bY98RsFG2WZCECRqbnQX0dOFuxekK5kM/srQjbhT3OQeih66AgxcrsgfFwK0JIkwVoU7svUTEf5mgr7JvodJ2njeFre0WLcIg20ycMPwXwoEuUbrMYyNJMhwzIrcAZsdN1T4pLAzFu+Ng/UFJP5tw647KnF21Lb20NSNjT6+CHrsVCxcy2WwdIR5Z8zH3ittOdyG7++Ri+C5nP8yuA2+77B8+ETu6nQW0BPrkuFT9OlD7uiMy6upyUl4s9oW8yBUpIPro9HFGdIntK0IoypuAKodtXJMzc0KFtoLV3PII8T4L9nscGZmZcxhJxxQHujI+tS61IsmXqhtBZWwV8NxN7+lf7MOzBHQXceHGqvuwiIcK3QRr0Pv60pm/DSqDgkizpwl0DArIeexB5p47sQiHJyhRZ1DtFHMLW4k6NecgczjUAaEtuZ0bcyiZyC/XwNxnuzQBBpEybufk6+YPcZyiXRxYL8bhw6gdkDDXWdDZ4HvDZbdAWN1PQYRwDMBcuWMCw26Eg/Ida67P"
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 31,
+    "candidatesTokenCount": 232,
+    "totalTokenCount": 769,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 31
+      }
+    ],
+    "thoughtsTokenCount": 506,
+    "serviceTier": "standard"
+  },
+  "modelVersion": "gemini-3.6-flash",
+  "responseId": "i4Ggar3EN4n2nsEPu6zN2Q4"
+}
