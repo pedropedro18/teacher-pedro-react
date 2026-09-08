@@ -10,6 +10,7 @@ import { login, verificarToken } from './api/auth.js';
 import { loginAluno, definirPasswordAluno, meuPerfil, verificarTokenAluno } from './api/alunoAuth.js';
 import certificadoRouter from './api/certificado.js';
 import materiaisRoutes from './api/materiais.js';
+import { corrigirComIA } from './api/corrigirIA.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -32,6 +33,22 @@ app.use('/api/alunos', verificarToken, alunosRouter);
 app.use('/api', certificadoRouter);
 app.use('/api/aluno', resultadoRouter);
 app.use('/api/materiais', materiaisRoutes);
+
+app.post('/api/corrigir', async (req, res) => {
+  const { texto, nivel } = req.body;
+
+  if (!texto || !nivel) {
+    return res.status(400).json({ erro: 'Texto e nível são obrigatórios' });
+  }
+
+  const resultado = await corrigirComIA(texto, nivel);
+
+  if (!resultado) {
+    return res.status(500).json({ erro: 'Erro ao corrigir o texto' });
+  }
+
+  res.json(resultado);
+});
 
 
 

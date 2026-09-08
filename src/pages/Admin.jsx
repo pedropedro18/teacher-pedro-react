@@ -84,6 +84,25 @@ export default function Admin() {
     } catch (err) {
       console.error('Erro ao corrigir submissão:', err);
     }
+    async function sugerirComIA(id, resposta, nivel) {
+  try {
+    const res = await fetch('/api/corrigir', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders()
+      },
+      body: JSON.stringify({ texto: resposta, nivel })
+    });
+    const dados = await res.json();
+
+    if (dados.corrected_text) {
+      setFeedbackTemp((prev) => ({ ...prev, [id]: dados.feedback }));
+    }
+  } catch (err) {
+    console.error('Erro ao sugerir correção com IA:', err);
+  }
+}
   }
 
   async function apagarSubmissao(id) {
@@ -344,6 +363,9 @@ export default function Admin() {
                         setFeedbackTemp({ ...feedbackTemp, [s.id]: e.target.value })
                       }
                     />
+                    <button onClick={() => sugerirComIA(s.id, s.resposta, s.nivel)}>
+                    Sugerir com IA
+                    </button>
                     <button onClick={() => handleCorrigir(s.id)}>Corrigir</button>
                   </div>
                 )}
