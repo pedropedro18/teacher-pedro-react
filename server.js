@@ -12,6 +12,8 @@ import certificadoRouter from './api/certificado.js';
 import materiaisRoutes from './api/materiais.js';
 import { corrigirComIA } from './api/corrigirIA.js';
 
+ 
+  
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -35,6 +37,7 @@ app.use('/api/aluno', resultadoRouter);
 app.use('/api/materiais', materiaisRoutes);
 
 app.post('/api/corrigir', async (req, res) => {
+   console.log('🔥 ROTA CORRIGIR CHAMADA'); // linha nova
   const { texto, nivel } = req.body;
 
   if (!texto || !nivel) {
@@ -62,4 +65,5 @@ app.get('/*splat', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Servidor a correr em http://localhost:${PORT}`);
+
 });
