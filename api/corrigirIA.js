@@ -1,78 +1,86 @@
-import 'dotenv/config';
+import fs from "fs";
 
-console.log(
-  'Chave carregada:',
-  process.env.GEMINI_API_KEY ? 'SIM, começa com ' + process.env.GEMINI_API_KEY.slice(0, 6) : 'NÃO CARREGOU'
-);
+// corrigirIA.js verifica process.env.GEMINI_API_KEY logo no import
+// (tem um console.log no topo do ficheiro), por isso definimos a
+// variável ANTES de importar, com import dinâmico.
+process.env.GEMINI_API_KEY = "chave-de-teste-123456";
 
-async function chamarGeminiComRetry(textoAluno, nivelCEFR, tentativas = 3, esperaMs = 2000) {
-  for (let i = 0; i < tentativas; i++) {
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${process.env.GEMINI_API_KEY.trim()}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              role: 'user',
-              parts: [
-                {
-                  text: `Você é um professor de inglês corrigindo um texto de nível ${nivelCEFR}. Dê: ${textoAluno}`
-                }
-              ]
-            }
-          ],
-          generationConfig: {
-            responseMimeType: 'application/json'
-          }
-        })
-      }
-    );
+const { corrigirComIA } = await import("../api/corrigirIA.js");
 
-    const data = await response.json();
+beforeEach(() => {
+  jest.restoreAllMocks();
+  // Evita escrever mesmo o ficheiro resposta-debug.json durante os testes
+  jest.spyOn(fs, "writeFileSync").mockImplementation(() => {});
+  // A função espera (2s, 4s, 8s...) antes de repetir em caso de erro 503.
+  // Fazemos o setTimeout correr o callback de imediato, sem esperar mesmo,
+  // para os testes não demorarem segundos a correr.
+  jest.spyOn(global, "setTimeout").mockImplementation((cb) => cb());
+});
 
-    // Se veio candidates, sucesso — devolve já
-    if (data.candidates) {
-      return data;
-    }
-
-    // Se for erro 503 (sobrecarregado) e ainda temos tentativas, espera e repete
-    const codigoErro = data?.error?.code;
-    if (codigoErro === 503 && i < tentativas - 1) {
-      console.log(`Tentativa ${i + 1} falhou (503 - modelo sobrecarregado), a tentar novamente em ${esperaMs}ms...`);
-      await new Promise((resolve) => setTimeout(resolve, esperaMs));
-      esperaMs *= 2; // duplica o tempo de espera a cada tentativa (2s, 4s, 8s...)
-      continue;
-    }
-
-    // Outro tipo de erro, ou esgotaram-se as tentativas — regista e desiste
-    console.error('Resposta da API sem candidates:', data);
-    return null;
-  }
-
-  return null;
+function respostaComSucesso(nota, feedback) {
+  return {
+    json: async () => ({
+      candidates: [
+        { content: { parts: [{ text: JSON.stringify({ nota, feedback }) }] } },
+      ],
+    }),
+  };
 }
 
-async function corrigirComIA(textoAluno, nivelCEFR) {
-  try {
-    const data = await chamarGeminiComRetry(textoAluno, nivelCEFR);
-
-    if (!data) {
-      return null;
-    }
-
-    const fs = await import('fs');
-    fs.writeFileSync('resposta-debug.json', JSON.stringify(data, null, 2));
-
-    const conteudo = data.candidates[0].content.parts[0].text;
-    return JSON.parse(conteudo);
-  } catch (erro) {
-    console.error('Erro na correção IA:', erro);
-    return null;
-  }
+function respostaComErro(codigo) {
+  return { json: async () => ({ error: { code: codigo } }) };
 }
 
-export { corrigirComIA };
+describe("corrigirComIA", () => {
+  test("devolve nota e feedback quando a IA responde com sucesso à primeira", async () => {
+    global.fetch = jest.fn().mockResolvedValue(respostaComSucesso(16, "Bom trabalho."));
+
+    const resultado = await corrigirComIA("Texto do aluno", "B1");
+
+    expect(resultado).toEqual({ nota: 16, feedback: "Bom trabalho." });
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(fs.writeFileSync).toHaveBeenCalled();
+  });
+
+  test("devolve null quando a API falha com um erro que não é 503 (não repete)", async () => {
+    global.fetch = jest.fn().mockResolvedValue(respostaComErro(400));
+
+    const resultado = await corrigirComIA("Texto do aluno", "B1");
+
+    expect(resultado).toBeNull();
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+  });
+
+  test("repete em caso de 503 e devolve sucesso na 2ª tentativa", async () => {
+    global.fetch = jest
+      .fn()
+      .mockResolvedValueOnce(respostaComErro(503))
+      .mockResolvedValueOnce(respostaComSucesso(12, "Ok, mas revê a gramática."));
+
+    const resultado = await corrigirComIA("Texto do aluno", "A2");
+
+    expect(global.fetch).toHaveBeenCalledTimes(2);
+    expect(resultado).toEqual({ nota: 12, feedback: "Ok, mas revê a gramática." });
+  });
+
+  test("devolve null se todas as 3 tentativas falharem com 503", async () => {
+    global.fetch = jest.fn().mockResolvedValue(respostaComErro(503));
+
+    const resultado = await corrigirComIA("Texto do aluno", "A2");
+
+    expect(global.fetch).toHaveBeenCalledTimes(3);
+    expect(resultado).toBeNull();
+  });
+
+  test("devolve null se a IA responder com texto que não é JSON válido", async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      json: async () => ({
+        candidates: [{ content: { parts: [{ text: "isto não é JSON válido" }] } }],
+      }),
+    });
+
+    const resultado = await corrigirComIA("Texto do aluno", "B1");
+
+    expect(resultado).toBeNull();
+  });
+});

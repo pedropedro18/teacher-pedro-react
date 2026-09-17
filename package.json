@@ -10,7 +10,8 @@
     "postinstall": "npm run build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
@@ -28,6 +29,7 @@
     "react-dom": "^19.2.8",
     "react-markdown": "^10.1.0",
     "react-router-dom": "^7.18.2",
+    "recharts": "^3.10.1",
     "vite": "^8.2.0"
   },
   "devDependencies": {
@@ -37,6 +39,8 @@
     "eslint": "^10.8.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.3",
-    "globals": "^17.7.0"
+    "globals": "^17.7.0",
+    "jest": "^30.5.1",
+    "supertest": "^7.2.2"
   }
 }
