@@ -1,6 +1,17 @@
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
 import { posts, parsePost } from '../utils/posts';
+
+function getExcerpt(content, maxWords = 20) {
+  const plain = content.replace(/[#*_`>[\]]/g, '').trim();
+  const words = plain.split(/\s+/).slice(0, maxWords);
+  return words.join(' ') + (plain.split(/\s+/).length > maxWords ? '...' : '');
+}
+
+function getReadingTime(content) {
+  const words = content.trim().split(/\s+/).length;
+  const minutes = Math.max(1, Math.round(words / 200));
+  return `${minutes} min de leitura`;
+}
 
 export default function Blog() {
 
@@ -12,14 +23,23 @@ export default function Blog() {
 
   return (
     <main className="blog-page">
-      <h1>Blog</h1>
-      <div className="blog-list">
-        {filteredArticles.map(post => (
-          <div key={post.slug} className="blog-card">
-            <Link to={`/blog/${post.slug}`}>{post.title}</Link>
-            <span className="blog-date">{post.date}</span>
-          </div>
-        ))}
+      <div className="blog-page-inner">
+        <h1>Blog</h1>
+        <div className="blog-list">
+          {filteredArticles.length === 0 && (
+            <p className="blog-empty">Ainda não há artigos publicados.</p>
+          )}
+          {filteredArticles.map(post => (
+            <Link to={`/blog/${post.slug}`} key={post.slug} className="blog-card">
+              <div className="blog-card-header">
+                <span className="blog-date">{post.date}</span>
+                <span className="blog-reading-time">{getReadingTime(post.content)}</span>
+              </div>
+              <h2 className="blog-card-title">{post.title}</h2>
+              <p className="blog-card-excerpt">{getExcerpt(post.content)}</p>
+            </Link>
+          ))}
+        </div>
       </div>
     </main>
   );

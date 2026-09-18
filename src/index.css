@@ -929,14 +929,23 @@ section {
 
 /* ===== BLOG ===== */
 .blog-page {
-  padding: 2rem 2rem 4rem;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #0b2a4a 0%, #123b63 100%);
+  padding: 120px 24px 80px;
+  box-sizing: border-box;
+}
+
+.blog-page-inner {
   max-width: 800px;
   margin: 0 auto;
 }
 
 .blog-page h1 {
-  font-family: var(--font-heading);
-  margin-bottom: 2rem;
+  font-family: "Fraunces", serif;
+  font-weight: 600;
+  font-size: 2.4rem;
+  color: #f4f1ea;
+  margin-bottom: 2.5rem;
 }
 
 .blog-list {
@@ -946,65 +955,96 @@ section {
 }
 
 .blog-card {
-  background: #0d2f52;
-  padding: 1.5rem;
-  border-radius: 10px;
-  transition: box-shadow 0.3s;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(244, 241, 234, 0.15);
+  border-left: 2px solid #e3a345;
+  border-radius: 8px;
+  padding: 1.5rem 1.75rem;
+  backdrop-filter: blur(6px);
+  transition: transform 0.2s ease, border-color 0.2s ease;
 }
 
 .blog-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transform: translateY(-3px);
+  border-color: #e3a345;
 }
 
 .blog-card a {
-  color: #ffffff;
+  color: #f4f1ea;
   text-decoration: none;
-  font-family: var(--font-heading);
+  font-family: "Fraunces", serif;
   font-size: 1.3rem;
   font-weight: 600;
 }
 
 .blog-card a:hover {
-  color: #4dabf7;
+  color: #e3a345;
 }
 
 .blog-date {
-  color: #9fb8d1;
+  color: #9fb0c2;
   font-size: 0.9rem;
   margin-top: 0.4rem;
   display: block;
 }
 
 .blog-post {
-  padding: 2rem 2rem 4rem;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #0b2a4a 0%, #123b63 100%);
+  padding: 120px 24px 80px;
+  box-sizing: border-box;
+}
+
+.blog-post-inner {
   max-width: 800px;
   margin: 0 auto;
 }
 
 .blog-post .back-link {
-  color: #4dabf7;
+  color: #e3a345;
   text-decoration: none;
   display: inline-block;
   margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.blog-post .back-link:hover {
+  color: #f0b658;
 }
 
 .blog-post h1 {
-  font-family: var(--font-heading);
+  font-family: "Fraunces", serif;
+  font-weight: 600;
+  font-size: 2.2rem;
+  color: #f4f1ea;
   margin-bottom: 0.5rem;
 }
 
 .blog-post-content {
   line-height: 1.7;
   margin-top: 2rem;
+  color: #d7dee7;
 }
 
 .blog-post-content h2 {
-  font-family: var(--font-heading);
+  font-family: "Fraunces", serif;
+  color: #f4f1ea;
   margin: 2rem 0 0.75rem;
 }
 
 .blog-post-content p {
   margin-bottom: 1rem;
+}
+
+@media (max-width: 600px) {
+  .blog-page,
+  .blog-post {
+    padding: 96px 20px 60px;
+  }
+  .blog-page h1,
+  .blog-post h1 {
+    font-size: 1.8rem;
+  }
 }
 
 /* ===== ANIMAÇÕES ===== */
