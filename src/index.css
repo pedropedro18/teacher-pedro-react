@@ -110,15 +110,133 @@ section {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  padding: 4rem 2rem;
+  padding: 5rem 2rem;
+  text-align: center;
 }
 
 #cursos h2 {
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   font-size: 2rem;
   font-weight: 600;
 }
 
+.courses-subtitle {
+  color: #9fb8d1;
+  margin-bottom: 2.5rem;
+  max-width: 500px;
+}
+
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 1000px;
+}
+
+.course-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #fff;
+  padding: 2.2rem 1.5rem 1.8rem;
+  text-align: center;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.course-card:hover {
+  transform: translateY(-6px);
+  border-color: #4dabf7;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+}
+
+.course-card--destaque {
+  border-color: #ffc857;
+  background: rgba(255, 200, 87, 0.08);
+}
+
+.course-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ffc857;
+  color: #0a2540;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 14px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.course-nivel {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #4dabf7;
+  line-height: 1;
+}
+
+.course-card--destaque .course-nivel {
+  color: #ffc857;
+}
+
+.course-card h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.course-duracao {
+  display: inline-block;
+  font-size: 0.8rem;
+  color: #cfe0f5;
+  background: rgba(77, 171, 247, 0.15);
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 4px;
+}
+
+.course-preco {
+  font-size: 0.85rem;
+  color: #cfe0f5;
+  margin-bottom: 8px;
+}
+
+.course-preco strong {
+  color: #ffc857;
+  font-size: 1rem;
+}
+
+.course-btn {
+  display: inline-block;
+  background: #4dabf7;
+  color: #0a2540;
+  font-weight: 700;
+  padding: 10px 24px;
+  border-radius: 30px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.course-btn:hover {
+  background: #ffc857;
+  transform: scale(1.05);
+}
+
+@media (max-width: 600px) {
+  #cursos {
+    padding: 4rem 1.2rem;
+  }
+  .course-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
 #contacto {
   display: flex;
   flex-direction: column;
