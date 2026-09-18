@@ -26,7 +26,7 @@ export default function Cursos() {
         {NIVEIS.map((nivel) => (
           <div
             key={nivel.id}
-            className={course-card `${nivel.destaque ? 'course-card--destaque' : ''}`}
+            className={`course-card ${nivel.destaque ? 'course-card--destaque' : ''}`}
           >
             {nivel.destaque && <span className="course-badge">Mais procurado</span>}
             <span className="course-nivel">{nivel.label}</span>
