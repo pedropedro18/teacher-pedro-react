@@ -19,6 +19,7 @@ export default function Contacto() {
 
   return (
     <section id="contacto" className="contact">
+      <span className='contact-kicker'>Fala comigo</span>
       <h2>Contacto</h2>
 
       <form className="contact-form" onSubmit={handleSubmit}>
