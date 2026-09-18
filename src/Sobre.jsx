@@ -3,7 +3,7 @@ export default function Sobre() {
     <section id="sobre" className="about">
       <div className="about-topo">
         <img src="/imagens/IMG_20250529_070439_367.jpg" alt="Teacher Pedro" />
-         <img src="/imagens/logo.svg" alt="Logótipo Teacher Pedro" className="about-logo" />
+         <img src="/imagens/logo.png" alt="Logótipo Teacher Pedro" className="about-logo" />
         <div>
           <p className="about-nome">Teacher Pedro</p>
           <p>
