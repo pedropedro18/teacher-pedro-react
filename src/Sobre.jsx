@@ -1,5 +1,3 @@
-import "./Sobre.css";
-
 export default function Sobre() {
   return (
     <section id="sobre" className="about">
