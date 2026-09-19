@@ -1348,11 +1348,11 @@ section {
 
 
 /* =====================================================
-   AJUSTES MOBILE (adicionados no final de propósito,
+   AJUSTES MOBILE (manter sempre no final do ficheiro,
    para sobrepor as regras acima)
    ===================================================== */
 
-/* ---------- 1. CAUSA DO CORTE HORIZONTAL ----------
+/* ---------- 1. Evitar corte horizontal ----------
    A regra global "section" usa display:flex em LINHA.
    Nas secções .diferenciais, .depoimentos e .cta, o título
    e a grelha ficavam lado a lado e o excesso era cortado.
@@ -1410,8 +1410,12 @@ img {
     padding: 0.25rem 0.5rem;
   }
 
-  /* Hero */
-  .hero {
+  /* Hero
+     padding-top de 90px: a etiqueta "Ensino certificado" deixa
+     de ficar escondida atrás do header fixo.
+     "section.hero" tem mais especificidade que ".hero" (index.css). */
+  section.hero {
+    padding: 90px 20px 32px;
     gap: 24px;
   }
 
@@ -1434,7 +1438,9 @@ img {
     gap: 12px;
   }
 
-  .hero .hero-buttons > * {
+  /* Botões com a largura toda (ganha ao ".hero .btn-primary" do index.css) */
+  .hero .hero-buttons .btn-primary,
+  .hero .hero-buttons .btn-secondary {
     width: 100%;
     text-align: center;
   }
