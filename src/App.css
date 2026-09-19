@@ -1345,3 +1345,195 @@ section {
   border-bottom: 1px solid #e2e8f0;
   color: #475569;
 }
+
+
+/* =====================================================
+   AJUSTES MOBILE (adicionados no final de propósito,
+   para sobrepor as regras acima)
+   ===================================================== */
+
+/* ---------- 1. CAUSA DO CORTE HORIZONTAL ----------
+   A regra global "section" usa display:flex em LINHA.
+   Nas secções .diferenciais, .depoimentos e .cta, o título
+   e a grelha ficavam lado a lado e o excesso era cortado.
+   Solução: empilhar em coluna e deixar os filhos encolher. */
+
+.diferenciais,
+.depoimentos,
+.cta {
+  flex-direction: column;
+}
+
+section > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.diferenciais-grid,
+.depoimentos-grid,
+.course-grid {
+  width: 100%;
+}
+
+img {
+  max-width: 100%;
+}
+
+
+/* ---------- 2. TABLET / TELEMÓVEL (até 768px) ---------- */
+@media (max-width: 768px) {
+
+  /* Cabeçalho: logo com margem, menu abre por baixo */
+  .site-header {
+    flex-wrap: wrap;
+    padding: 0.6rem 1rem;
+  }
+
+  .site-header nav {
+    width: 100%;
+  }
+
+  .site-header nav ul {
+    width: 100%;
+    gap: 0.25rem;
+    padding: 0.5rem 0 0.75rem;
+  }
+
+  .site-header nav a {
+    display: block;
+    padding: 0.6rem 0;
+  }
+
+  .menu-toggle {
+    top: 0.55rem;
+    right: 1rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  /* Hero */
+  .hero {
+    gap: 24px;
+  }
+
+  .hero-content {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .hero-title {
+    font-size: clamp(1.7rem, 7vw, 2.2rem);
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+    margin-bottom: 20px;
+  }
+
+  .hero .hero-buttons {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .hero .hero-buttons > * {
+    width: 100%;
+    text-align: center;
+  }
+
+  .hero-card {
+    width: 100%;
+    min-width: 0;
+    padding: 20px;
+  }
+
+  /* Diferenciais / Depoimentos / CTA: sem altura de ecrã inteiro */
+  .diferenciais,
+  .depoimentos,
+  .cta {
+    min-height: auto;
+    padding: 40px 16px;
+  }
+
+  .diferenciais h2,
+  .depoimentos h2 {
+    font-size: 1.4rem;
+    margin-bottom: 24px;
+  }
+
+  .diferenciais-grid,
+  .depoimentos-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .diferencial-card,
+  .depoimento-card {
+    padding: 20px;
+  }
+
+  .cta h2 {
+    font-size: 1.4rem;
+  }
+
+  /* Sobre mim */
+  .about {
+    padding: 64px 20px;
+  }
+
+  .about-bio {
+    gap: 24px;
+    margin-bottom: 48px;
+  }
+
+  .about-nome {
+    font-size: 1.8rem;
+  }
+
+  .about-bio-text p {
+    max-width: 100%;
+  }
+
+  /* Cursos */
+  #cursos {
+    min-height: auto;
+    padding: 4rem 1.2rem;
+  }
+
+  /* Contacto */
+  #contacto {
+    min-height: auto;
+    padding: 56px 16px;
+  }
+
+  .contact h2 {
+    font-size: 1.8rem;
+  }
+
+  .contact-form {
+    padding: 20px;
+  }
+
+  /* 16px evita o zoom automático ao tocar num campo (iPhone) */
+  .contact-form input,
+  .contact-form textarea {
+    font-size: 16px;
+  }
+
+  .btn-whatsapp {
+    display: block;
+    text-align: center;
+  }
+}
+
+
+/* ---------- 3. TELEMÓVEIS PEQUENOS (até 480px) ---------- */
+@media (max-width: 480px) {
+
+  /* Cartões de cursos numa só coluna (2 colunas ficam demasiado apertadas) */
+  .course-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .blog-card {
+    padding: 1.25rem;
+  }
+}
