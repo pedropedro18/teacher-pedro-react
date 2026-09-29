@@ -1,4 +1,4 @@
-import { Link, useNavigate} from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
 const LINKS = [
@@ -14,15 +14,15 @@ export default function Header() {
   const [open, setOpen] = useState(false);
 
   const handleNavClick = (id) => (e) => {
-    if (id === 'cursos'){
-    setOpen(false);
+    if (id === 'cursos') {
+      setOpen(false);
       navigate('/cursos');
       return;
-      }
-      e.preventDefault();
-      setOpen(false);
-      if (window.location.pathname !== '/') {
-        navigate('/');
+    }
+    e.preventDefault();
+    setOpen(false);
+    if (window.location.pathname !== '/') {
+      navigate('/');
       setTimeout(() => {
         document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
       }, 100);
@@ -76,13 +76,14 @@ export default function Header() {
               Blog
             </Link>
           </li>
-<li>
-  <Link to="/login-aluno" onClick={() => setOpen(false)}>
-    Área do Aluno
-  </Link>
-</li>
-</ul>
+          <li>
+            <Link to="/exercicios-ingles" onClick={() => setOpen(false)}>
+              Exercícios
+            </Link>
+          </li>
+        </ul>
       </nav>
+
       <button className="menu-toggle" onClick={() => setOpen(!open)}>
         ☰
       </button>

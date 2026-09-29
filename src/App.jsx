@@ -8,14 +8,9 @@ import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import Admin from './pages/Admin';
 import Login from './pages/Login';
-import LoginAluno from './pages/LoginAluno';
-import PainelAluno from './pages/painelAluno';
-import ExerciciosAluno from './pages/ExerciciosAluno';
-import Exercicio from './Exercicio';
 import RotaProtegida from './RotaProtegida';
 import MateriaisAdmin from './pages/MateriaisAdmin';
-
-import RotaProtegidaAluno from './RotaProtegidaAluno';
+import ExerciciosNiveis from "./ExerciciosNiveis";
 
 function App() {
   return (
@@ -25,15 +20,12 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/admin/materiais" element={<RotaProtegida><MateriaisAdmin /></RotaProtegida>} />
         <Route path="/cursos" element={<Cursos />} />
+        <Route path="/exercicios-ingles" element={<ExerciciosNiveis />} />
         <Route path="/contacto" element={<Contacto />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
         <Route path="/admin" element={<RotaProtegida><Admin /></RotaProtegida>} />
         <Route path="/login" element={<Login />} />
-        <Route path="/login-aluno" element={<LoginAluno />} />
-        <Route path="/aluno/painel" element={<RotaProtegidaAluno><PainelAluno /></RotaProtegidaAluno>} />
-        <Route path="/aluno/exercicios" element={<RotaProtegidaAluno><ExerciciosAluno /></RotaProtegidaAluno>} />
-        <Route path="/aluno/exercicio/:topicoId" element={<RotaProtegidaAluno><Exercicio /></RotaProtegidaAluno>} />
       </Routes>
     </>
   );
