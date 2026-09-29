@@ -7,6 +7,7 @@ import Contacto from './pages/Contacto';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import ExerciciosNiveis from "./ExerciciosNiveis";
+import ExerciciosTemas from './ExerciciosTemas';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/contacto" element={<Contacto />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
+        <Route path="/exercicios-temas" element={<ExerciciosTemas />} />
       </Routes>
     </>
   );

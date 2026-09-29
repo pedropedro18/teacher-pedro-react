@@ -81,6 +81,11 @@ export default function Header() {
               Exercícios
             </Link>
           </li>
+          <li>
+  <Link to="/exercicios-temas" onClick={() => setOpen(false)}>
+    Temas
+  </Link>
+</li>
         </ul>
       </nav>
 
