@@ -8,6 +8,7 @@ import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import ExerciciosNiveis from "./ExerciciosNiveis";
 import ExerciciosTemas from './ExerciciosTemas';
+import Aluno from './Aluno';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
         <Route path="/exercicios-temas" element={<ExerciciosTemas />} />
+        <Route path="/Aluno" element={<Aluno />} />
       </Routes>
     </>
   );
