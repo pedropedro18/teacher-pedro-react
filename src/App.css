@@ -1562,4 +1562,7 @@ img {
     white-space: nowrap;
   }
 }
+.nivel-bloco { display: flex; flex-direction: column; gap: 16px; }
+.nivel-titulo { position: static; margin-bottom: 8px; }
+.aulas { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
 }
