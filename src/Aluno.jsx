@@ -6,7 +6,7 @@ const ORDEM = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
 const AULAS = {
   A1: [
-    { titulo: "Aula 1 - Apresentação", texto: "My name is Ana. I live in Lisbon.", audio: "/audio/a1-aula1.mp3" },
+    { titulo: "Aula 1 - Apresentação", texto: "My name is Ana. I live in Lisbon.", audio: "/audio/aula1.mp3" },
     { titulo: "Aula 2 - Família", texto: "I have a brother. He is ten years old." },
     { titulo: "Aula 3 - Cores e objetos", texto: "This is a red book. That is a blue pen." },
     { titulo: "Aula 4 - Rotina diária", texto: "I wake up at seven. I eat breakfast and go to school." },
