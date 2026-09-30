@@ -2,7 +2,6 @@ import './App.css';
 import { Routes, Route } from 'react-router-dom';
 import Header from './header';
 import Home from './pages/Home';
-import Agenda from "./AgendaAluno";
 import Cursos from './Cursos';
 import Contacto from './pages/Contacto';
 import Blog from './pages/Blog';
@@ -10,6 +9,7 @@ import BlogPost from './pages/BlogPost';
 import ExerciciosNiveis from "./ExerciciosNiveis";
 import ExerciciosTemas from './ExerciciosTemas';
 import Aluno from './Aluno';
+import Professor from './Professor';
 
 function App() {
   return (
@@ -24,6 +24,7 @@ function App() {
         <Route path="/blog/:slug" element={<BlogPost />} />
         <Route path="/exercicios-temas" element={<ExerciciosTemas />} />
         <Route path="/Aluno" element={<Aluno />} />
+        <Route path="/professor" element={<Professor />} />
       </Routes>
     </>
   );
