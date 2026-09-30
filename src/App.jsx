@@ -2,6 +2,7 @@ import './App.css';
 import { Routes, Route } from 'react-router-dom';
 import Header from './header';
 import Home from './pages/Home';
+import Agenda from "./AgendaAluno";
 import Cursos from './Cursos';
 import Contacto from './pages/Contacto';
 import Blog from './pages/Blog';
