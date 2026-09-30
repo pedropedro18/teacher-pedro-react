@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db, garantirLogin } from "./firebase";
+import AgendaAluno from "./AgendaAluno";
 
 const ORDEM = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
@@ -93,6 +94,7 @@ export default function Aluno() {
   return (
     <div style={{ padding: 20 }}>
       <h2>Olá, {aluno.aluno}!</h2>
+      <AgendaAluno nomeAluno={aluno.aluno} />
       {niveis.length === 0 && <p>Ainda não tens níveis atribuídos.</p>}
       {niveis.map((n) => (
         <section key={n} style={{ marginBottom: 24 }}>
