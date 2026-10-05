@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
 const LINKS = [
@@ -10,27 +10,38 @@ const LINKS = [
 
 export default function Header() {
   const [active, setActive] = useState('inicio');
-  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleNavClick = (id) => (e) => {
+    e.preventDefault();
+    setOpen(false);
+
     if (id === 'cursos') {
-      setOpen(false);
       navigate('/cursos');
       return;
     }
-    e.preventDefault();
-    setOpen(false);
-    if (window.location.pathname !== '/') {
-      navigate('/');
-      setTimeout(() => {
-        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
+
+    if (location.pathname !== '/') {
+      navigate('/', { state: { scrollTo: id } });
     } else {
       document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
+  // Scroll para a secção depois de navegar para a home
+  useEffect(() => {
+    const target = location.state?.scrollTo;
+    if (location.pathname === '/' && target) {
+      const timer = setTimeout(() => {
+        document.getElementById(target)?.scrollIntoView({ behavior: 'smooth' });
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [location.pathname, location.state]);
+
+  // Observer: volta a correr sempre que a rota muda
   useEffect(() => {
     const sections = LINKS.map((l) => document.getElementById(l.id));
 
@@ -50,7 +61,7 @@ export default function Header() {
     });
 
     return () => observer.disconnect();
-  }, []);
+  }, [location.pathname]);
 
   return (
     <header className={`site-header ${open ? 'open' : ''}`}>
@@ -63,7 +74,7 @@ export default function Header() {
           {LINKS.map((link) => (
             <li key={link.id}>
               <a
-                href={link.id === 'cursos' ? '/cursos' : `#${link.id}`}
+                href={link.id === 'cursos' ? '/cursos' : `/#${link.id}`}
                 className={active === link.id ? 'active' : ''}
                 onClick={handleNavClick(link.id)}
               >
@@ -87,6 +98,11 @@ export default function Header() {
             </Link>
           </li>
           <li>
+            <Link to="/fichas" onClick={() => setOpen(false)}>
+              Fichas
+            </Link>
+          </li>
+          <li>
             <Link to="/Aluno" onClick={() => setOpen(false)}>
               Área do Aluno
             </Link>
@@ -94,7 +110,12 @@ export default function Header() {
         </ul>
       </nav>
 
-      <button className="menu-toggle" onClick={() => setOpen(!open)}>
+      <button
+        className="menu-toggle"
+        onClick={() => setOpen(!open)}
+        aria-label="Abrir menu"
+        aria-expanded={open}
+      >
         ☰
       </button>
     </header>
