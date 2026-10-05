@@ -41,8 +41,13 @@ export default function Header() {
     }
   }, [location.pathname, location.state]);
 
-  // Observer: volta a correr sempre que a rota muda
+  // Observer: só na home; volta a correr sempre que a rota muda
   useEffect(() => {
+    if (location.pathname !== '/') {
+      setActive('');
+      return;
+    }
+
     const sections = LINKS.map((l) => document.getElementById(l.id));
 
     const observer = new IntersectionObserver(
@@ -64,7 +69,7 @@ export default function Header() {
   }, [location.pathname]);
 
   return (
-    <header className={`site-header ${open ? 'open' : ''}`}>
+    <header className={site-header `${open ? 'open' : ''}`}>
       <Link to="/" className="logo" onClick={() => setOpen(false)}>
         Tp
       </Link>

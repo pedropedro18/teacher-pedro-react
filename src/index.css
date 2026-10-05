@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap");
 
 :root {
   --font-heading: 'Poppins', sans-serif;
@@ -113,6 +113,23 @@ section {
   color: #fff;
   font-size: 1.5rem;
   cursor: pointer;
+}
+
+/* Desktop: espaço lateral para o logo não colar à borda */
+@media (min-width: 769px) {
+  .site-header {
+    padding: 0 1.5rem;
+  }
+}
+
+/* Desktop estreito: 9 links precisam de menos espaço */
+@media (min-width: 769px) and (max-width: 1100px) {
+  .site-header nav ul {
+    gap: 1rem;
+  }
+  .site-header nav a {
+    font-size: 0.9rem;
+  }
 }
 
 @media (max-width: 768px) {
@@ -955,37 +972,65 @@ section {
 }
 
 .blog-card {
+  display: block;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(244, 241, 234, 0.15);
   border-left: 2px solid #e3a345;
   border-radius: 8px;
   padding: 1.5rem 1.75rem;
   backdrop-filter: blur(6px);
+  text-decoration: none;
   transition: transform 0.2s ease, border-color 0.2s ease;
 }
 
 .blog-card:hover {
   transform: translateY(-3px);
-  border-color: #e3a345;
+  border-color: #f0b658;
 }
 
-.blog-card a {
-  color: #f4f1ea;
-  text-decoration: none;
-  font-family: "Fraunces", serif;
-  font-size: 1.3rem;
-  font-weight: 600;
-}
-
-.blog-card a:hover {
-  color: #e3a345;
+.blog-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: #9fb0c2;
+  margin-bottom: 0.5rem;
 }
 
 .blog-date {
   color: #9fb0c2;
   font-size: 0.9rem;
-  margin-top: 0.4rem;
-  display: block;
+}
+
+.blog-reading-time {
+  color: #9fb0c2;
+  font-size: 0.9rem;
+}
+
+.blog-card-title {
+  color: #f4f1ea;
+  font-family: "Fraunces", serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+  transition: color 0.2s ease;
+}
+
+.blog-card:hover .blog-card-title {
+  color: #e3a345;
+}
+
+.blog-card-excerpt {
+  color: #d7dee7;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.blog-empty {
+  color: #9fb0c2;
+  text-align: center;
+  padding: 2rem 0;
 }
 
 .blog-post {
@@ -1017,6 +1062,14 @@ section {
   font-weight: 600;
   font-size: 2.2rem;
   color: #f4f1ea;
+  margin-bottom: 0.5rem;
+}
+
+.blog-post-meta {
+  display: flex;
+  gap: 1rem;
+  color: #9fb0c2;
+  font-size: 0.9rem;
   margin-bottom: 0.5rem;
 }
 
@@ -1308,4 +1361,268 @@ section {
   padding: 0.6rem 0;
   border-bottom: 1px solid #e2e8f0;
   color: #475569;
+}
+
+/* ===== NÍVEIS / AULAS ===== */
+.nivel-bloco {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.nivel-titulo {
+  position: static;
+  margin-bottom: 8px;
+}
+
+.aulas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+/* ===== FICHAS ===== */
+.fichas {
+  display: block;
+  min-height: auto;
+  padding: 6rem 1.25rem 4rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.fichas p {
+  max-width: 55ch;
+  margin: 0 auto 1.5rem;
+}
+
+.fichas-btn {
+  display: inline-block;
+  padding: 0.8rem 1.6rem;
+  border-radius: 10px;
+  background: #f5a623;
+  color: #1b1d2a;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.fichas-frame {
+  display: block;
+  width: 100%;
+  height: 800px;
+  margin-top: 2rem;
+  border: 1px solid #cfd4e3;
+  border-radius: 14px;
+}
+
+@media (max-width: 800px) {
+  .fichas-frame {
+    height: 700px;
+  }
+}
+
+
+/* =====================================================
+   AJUSTES MOBILE (manter sempre no final do ficheiro,
+   para sobrepor as regras acima)
+   ===================================================== */
+
+/* ---------- 1. Evitar corte horizontal ---------- */
+
+.diferenciais,
+.depoimentos,
+.cta {
+  flex-direction: column;
+}
+
+section > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.diferenciais-grid,
+.depoimentos-grid,
+.course-grid {
+  width: 100%;
+}
+
+img {
+  max-width: 100%;
+}
+
+
+/* ---------- 2. TABLET / TELEMÓVEL (até 768px) ---------- */
+@media (max-width: 768px) {
+
+  /* Cabeçalho: menu abre por baixo e faz scroll se for alto */
+  .site-header {
+    flex-wrap: wrap;
+    padding: 0.6rem 1rem;
+  }
+
+  .site-header nav {
+    width: 100%;
+  }
+
+  .site-header nav ul {
+    width: 100%;
+    gap: 0.25rem;
+    padding: 0.5rem 0 0.75rem;
+    max-height: calc(100vh - 70px);
+    overflow-y: auto;
+  }
+
+  .site-header nav a {
+    display: block;
+    padding: 0.6rem 0;
+  }
+
+  .menu-toggle {
+    top: 0.55rem;
+    right: 1rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  /* Hero */
+  section.hero {
+    padding: 90px 20px 32px;
+    gap: 24px;
+  }
+
+  .hero-content {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .hero-title {
+    font-size: clamp(1.7rem, 7vw, 2.2rem);
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+    margin-bottom: 20px;
+  }
+
+  .hero .hero-buttons {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .hero .hero-buttons .btn-primary,
+  .hero .hero-buttons .btn-secondary {
+    width: 100%;
+    text-align: center;
+  }
+
+  .hero-card {
+    width: 100%;
+    min-width: 0;
+    padding: 20px;
+  }
+
+  /* Diferenciais / Depoimentos / CTA */
+  .diferenciais,
+  .depoimentos,
+  .cta {
+    min-height: auto;
+    padding: 40px 16px;
+  }
+
+  .diferenciais h2,
+  .depoimentos h2 {
+    font-size: 1.4rem;
+    margin-bottom: 24px;
+  }
+
+  .diferenciais-grid,
+  .depoimentos-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .diferencial-card,
+  .depoimento-card {
+    padding: 20px;
+  }
+
+  .cta h2 {
+    font-size: 1.4rem;
+  }
+
+  /* Sobre mim */
+  .about {
+    padding: 64px 20px;
+  }
+
+  .about-bio {
+    gap: 24px;
+    margin-bottom: 48px;
+  }
+
+  .about-nome {
+    font-size: 1.8rem;
+  }
+
+  .about-bio-text p {
+    max-width: 100%;
+  }
+
+  /* Cursos */
+  #cursos {
+    min-height: auto;
+    padding: 4rem 1.2rem;
+  }
+
+  /* Contacto */
+  #contacto {
+    min-height: auto;
+    padding: 56px 16px;
+  }
+
+  .contact h2 {
+    font-size: 1.8rem;
+  }
+
+  .contact-form {
+    padding: 20px;
+  }
+
+  /* 16px evita o zoom automático ao tocar num campo (iPhone) */
+  .contact-form input,
+  .contact-form textarea {
+    font-size: 16px;
+  }
+
+  .btn-whatsapp {
+    display: block;
+    text-align: center;
+  }
+}
+
+
+/* ---------- 3. CURSOS no telemóvel ---------- */
+@media (max-width: 600px) {
+  body .course-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+
+/* ---------- 4. TELEMÓVEIS PEQUENOS (até 480px) ---------- */
+@media (max-width: 480px) {
+  body .course-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  body .course-card {
+    padding: 2rem 1rem 1.5rem;
+  }
+
+  body .course-btn {
+    white-space: nowrap;
+  }
+
+  .blog-card {
+    padding: 1.25rem;
+  }
 }
