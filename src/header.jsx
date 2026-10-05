@@ -69,7 +69,7 @@ export default function Header() {
   }, [location.pathname]);
 
   return (
-    <header className={site-header `${open ? 'open' : ''}`}>
+    <header className={`site-header ${open ? 'open' : ''}`}>
       <Link to="/" className="logo" onClick={() => setOpen(false)}>
         Tp
       </Link>
