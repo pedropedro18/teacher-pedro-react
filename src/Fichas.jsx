@@ -1,4 +1,4 @@
-const LINK = "https://O-NOME-DA-TUA-APP.streamlit.app";
+const LINK = "https://gerador-fichas-b4v3bthjhsb2w2tstinmdl.streamlit.app";
 
 export default function Fichas() {
   return (
