@@ -108,6 +108,11 @@ export default function Header() {
             </Link>
           </li>
           <li>
+            <Link to="/aulas" onClick={() => setOpen(false)}>
+              Aulas
+            </Link>
+          </li>
+          <li>
             <Link to="/Aluno" onClick={() => setOpen(false)}>
               Área do Aluno
             </Link>
