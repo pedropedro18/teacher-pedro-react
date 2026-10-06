@@ -25,3 +25,7 @@ dist-ssr
 .env
 resposta-debug.json
 saida.txt
+.streamlit/secrets.toml
+.venv/
+__pycache__/
+*.pyc
