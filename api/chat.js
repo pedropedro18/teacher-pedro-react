@@ -62,7 +62,10 @@ export default async function handler(req, res) {
         body: JSON.stringify({
           systemInstruction: { parts: [{ text: SISTEMA }] },
           contents: msgs,
-          generationConfig: { maxOutputTokens: 400 },
+          generationConfig: {
+            maxOutputTokens: 600,
+            thinkingConfig: { thinkingBudget: 0 },
+          },
         }),
       }
     );
