@@ -1,5 +1,6 @@
+import './Chat.css';
 import './App.css';
-import GeradorAulas from "./GeradorAulas";
+import Chat from "./Chat";
 import { Routes, Route } from 'react-router-dom';
 import Header from './header';
 import Home from './pages/Home';
@@ -19,7 +20,6 @@ function App() {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/aulas" element={<GeradorAulas />} />
         <Route path="/cursos" element={<Cursos />} />
         <Route path="/exercicios-ingles" element={<ExerciciosNiveis />} />
         <Route path="/contacto" element={<Contacto />} />
@@ -30,6 +30,7 @@ function App() {
         <Route path="/Aluno" element={<Aluno />} />
         <Route path="/professor" element={<Professor />} />
       </Routes>
+      <Chat />
     </>
   );
 }
