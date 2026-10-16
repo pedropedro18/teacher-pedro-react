@@ -11,7 +11,37 @@ Cursos de inglês (níveis CEFR), preços a partir de:
 
 Também há cursos de Excel e programação/web.
 Para se inscrever, a pessoa clica em "Inscrever-me" na página de cursos ou fala no WhatsApp.
-Se não souberes algo, não inventes: sugere falar com o professor no WhatsApp.`;
+Se não souberes algo, não inventes: sugere falar com o professor no WhatsApp.
+Responde sempre em no máximo 4 frases curtas ou uma lista breve.`;
+
+// Podes forçar um modelo com a variável GEMINI_MODEL no Vercel.
+const MODELOS = [
+  process.env.GEMINI_MODEL,
+  "gemini-flash-latest",
+  "gemini-2.5-flash",
+  "gemini-2.0-flash",
+].filter(Boolean);
+
+async function chamarGemini(modelo, chave, msgs) {
+  return fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-goog-api-key": chave,
+      },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: SISTEMA }] },
+        contents: msgs,
+        generationConfig: {
+          maxOutputTokens: 600,
+          thinkingConfig: { thinkingBudget: 0 },
+        },
+      }),
+    }
+  );
+}
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -31,7 +61,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ erro: "Sem mensagens" });
     }
 
-    let msgs = mensagens
+    const msgs = mensagens
       .filter(
         (m) =>
           (m.role === "user" || m.role === "assistant") &&
@@ -51,29 +81,24 @@ export default async function handler(req, res) {
       return res.status(400).json({ erro: "Histórico inválido" });
     }
 
-    const r = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-goog-api-key": chave,
-        },
-        body: JSON.stringify({
-          systemInstruction: { parts: [{ text: SISTEMA }] },
-          contents: msgs,
-          generationConfig: {
-            maxOutputTokens: 600,
-            thinkingConfig: { thinkingBudget: 0 },
-          },
-        }),
-      }
-    );
+    let r = null;
+    let modeloUsado = null;
+
+    for (const modelo of MODELOS) {
+      r = await chamarGemini(modelo, chave, msgs);
+      modeloUsado = modelo;
+      if (r.status !== 404) break; // só tenta o próximo se o modelo não existir
+      console.error(`Modelo não encontrado: ${modelo}`);
+    }
 
     if (!r.ok) {
       const detalhe = await r.text();
-      console.error("Erro da API:", r.status, detalhe);
-      return res.status(502).json({ erro: "Falha na API" });
+      console.error("Erro da API:", r.status, modeloUsado, detalhe);
+      return res.status(502).json({
+        erro: "Falha na API",
+        status: r.status,
+        modelo: modeloUsado,
+      });
     }
 
     const dados = await r.json();
@@ -81,6 +106,11 @@ export default async function handler(req, res) {
       .map((p) => p.text || "")
       .join("")
       .trim();
+
+    if (!texto) {
+      console.error("Resposta vazia:", JSON.stringify(dados).slice(0, 300));
+      return res.status(502).json({ erro: "Resposta vazia" });
+    }
 
     return res.status(200).json({ texto });
   } catch (e) {
