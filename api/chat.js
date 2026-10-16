@@ -12,35 +12,59 @@ Cursos de inglês (níveis CEFR), preços a partir de:
 Também há cursos de Excel e programação/web.
 Para se inscrever, a pessoa clica em "Inscrever-me" na página de cursos ou fala no WhatsApp.
 Se não souberes algo, não inventes: sugere falar com o professor no WhatsApp.
-Responde sempre em no máximo 4 frases curtas ou uma lista breve.`;
+
+Regras de formato:
+- Responde em texto simples, sem markdown: não uses asteriscos, cardinais nem negrito.
+- Para listas, usa uma linha por item começando com "- ".
+- Responde sempre em no máximo 4 frases curtas ou uma lista breve.`;
 
 // Podes forçar um modelo com a variável GEMINI_MODEL no Vercel.
 const MODELOS = [
   process.env.GEMINI_MODEL,
+  "gemini-flash-lite-latest",
   "gemini-flash-latest",
-  "gemini-2.5-flash",
   "gemini-2.0-flash",
 ].filter(Boolean);
 
-async function chamarGemini(modelo, chave, msgs) {
-  return fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-goog-api-key": chave,
-      },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: SISTEMA }] },
-        contents: msgs,
-        generationConfig: {
-          maxOutputTokens: 600,
-          thinkingConfig: { thinkingBudget: 0 },
+const TIMEOUT_MS = 25000;
+
+async function chamarGemini(modelo, chave, msgs, comThinking) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+
+  const generationConfig = { maxOutputTokens: 800 };
+  if (comThinking) generationConfig.thinkingConfig = { thinkingBudget: 0 };
+
+  try {
+    return await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent`,
+      {
+        method: "POST",
+        signal: controller.signal,
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": chave,
         },
-      }),
-    }
-  );
+        body: JSON.stringify({
+          systemInstruction: { parts: [{ text: SISTEMA }] },
+          contents: msgs,
+          generationConfig,
+        }),
+      }
+    );
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function limparTexto(t) {
+  return t
+    .replace(/\\/g, "")
+    .replace(/__/g, "")
+    .replace(/^#{1,6}\s*/gm, "")
+    .replace(/^\s*[*•]\s+/gm, "- ")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
 }
 
 export default async function handler(req, res) {
@@ -83,12 +107,34 @@ export default async function handler(req, res) {
 
     let r = null;
     let modeloUsado = null;
+    const inicio = Date.now();
 
     for (const modelo of MODELOS) {
-      r = await chamarGemini(modelo, chave, msgs);
       modeloUsado = modelo;
-      if (r.status !== 404) break; // só tenta o próximo se o modelo não existir
+
+      try {
+        r = await chamarGemini(modelo, chave, msgs, true);
+
+        // Se o modelo não aceitar o thinkingConfig, tenta sem ele
+        if (r.status === 400) {
+          console.error(`400 com thinkingConfig em ${modelo}, a repetir sem ele`);
+          r = await chamarGemini(modelo, chave, msgs, false);
+        }
+      } catch (e) {
+        if (e.name === "AbortError") {
+          console.error(`Timeout em ${modelo}`);
+          r = null;
+          continue; // tenta o próximo modelo
+        }
+        throw e;
+      }
+
+      if (r.status !== 404) break; // só passa ao próximo se o modelo não existir
       console.error(`Modelo não encontrado: ${modelo}`);
+    }
+
+    if (!r) {
+      return res.status(504).json({ erro: "Tempo esgotado" });
     }
 
     if (!r.ok) {
@@ -102,16 +148,17 @@ export default async function handler(req, res) {
     }
 
     const dados = await r.json();
-    const texto = (dados.candidates?.[0]?.content?.parts || [])
+    const bruto = (dados.candidates?.[0]?.content?.parts || [])
       .map((p) => p.text || "")
-      .join("")
-      .trim();
+      .join("");
+    const texto = limparTexto(bruto);
 
     if (!texto) {
       console.error("Resposta vazia:", JSON.stringify(dados).slice(0, 300));
       return res.status(502).json({ erro: "Resposta vazia" });
     }
 
+    console.log(`OK ${modeloUsado} em ${Date.now() - inicio}ms`);
     return res.status(200).json({ texto });
   } catch (e) {
     console.error(e);
