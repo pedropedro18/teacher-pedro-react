@@ -23,10 +23,16 @@ const MODELOS = [
   process.env.GEMINI_MODEL,
   "gemini-flash-lite-latest",
   "gemini-flash-latest",
+  "gemini-2.5-flash",
   "gemini-2.0-flash",
 ].filter(Boolean);
 
-const TIMEOUT_MS = 25000;
+const TIMEOUT_MS = 15000;
+
+// Códigos em que vale a pena tentar outro modelo
+const TENTAR_OUTRO = [404, 429, 500, 502, 503, 504];
+
+const espera = (ms) => new Promise((r) => setTimeout(r, ms));
 
 async function chamarGemini(modelo, chave, msgs, comThinking) {
   const controller = new AbortController();
@@ -55,6 +61,16 @@ async function chamarGemini(modelo, chave, msgs, comThinking) {
   } finally {
     clearTimeout(timer);
   }
+}
+
+// Tenta um modelo; se der 400 repete sem thinkingConfig
+async function tentarModelo(modelo, chave, msgs) {
+  let r = await chamarGemini(modelo, chave, msgs, true);
+  if (r.status === 400) {
+    console.error(`400 com thinkingConfig em ${modelo}, a repetir sem ele`);
+    r = await chamarGemini(modelo, chave, msgs, false);
+  }
+  return r;
 }
 
 function limparTexto(t) {
@@ -107,34 +123,44 @@ export default async function handler(req, res) {
 
     let r = null;
     let modeloUsado = null;
+    let timeouts = 0;
     const inicio = Date.now();
 
     for (const modelo of MODELOS) {
       modeloUsado = modelo;
 
-      try {
-        r = await chamarGemini(modelo, chave, msgs, true);
+      // até 2 tentativas por modelo
+      for (let tentativa = 1; tentativa <= 2; tentativa++) {
+        try {
+          r = await tentarModelo(modelo, chave, msgs);
+        } catch (e) {
+          if (e.name === "AbortError") {
+            console.error(`Timeout em ${modelo}`);
+            timeouts++;
+            r = null;
+            break; // passa ao próximo modelo
+          }
+          throw e;
+        }
 
-        // Se o modelo não aceitar o thinkingConfig, tenta sem ele
-        if (r.status === 400) {
-          console.error(`400 com thinkingConfig em ${modelo}, a repetir sem ele`);
-          r = await chamarGemini(modelo, chave, msgs, false);
+        if (r.ok) break;
+
+        console.error(`Erro ${r.status} em ${modelo} (tentativa ${tentativa})`);
+
+        // 503/429/500: espera um pouco e repete o mesmo modelo
+        if ([429, 500, 502, 503, 504].includes(r.status) && tentativa === 1) {
+          await espera(700);
+          continue;
         }
-      } catch (e) {
-        if (e.name === "AbortError") {
-          console.error(`Timeout em ${modelo}`);
-          r = null;
-          continue; // tenta o próximo modelo
-        }
-        throw e;
+        break;
       }
 
-      if (r.status !== 404) break; // só passa ao próximo se o modelo não existir
-      console.error(`Modelo não encontrado: ${modelo}`);
+      if (r && r.ok) break;
+      if (r && !TENTAR_OUTRO.includes(r.status)) break; // erro que outro modelo não resolve
     }
 
     if (!r) {
-      return res.status(504).json({ erro: "Tempo esgotado" });
+      return res.status(504).json({ erro: "Tempo esgotado", timeouts });
     }
 
     if (!r.ok) {
