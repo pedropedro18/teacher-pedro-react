@@ -13,6 +13,7 @@ import ExerciciosNiveis from './ExerciciosNiveis';
 import ExerciciosTemas from './ExerciciosTemas';
 import Aluno from './Aluno';
 import Professor from './Professor';
+import PainelMatriculas from './PainelMatriculas';
 
 function App() {
   return (
@@ -29,6 +30,8 @@ function App() {
         <Route path="/fichas" element={<Fichas />} />
         <Route path="/Aluno" element={<Aluno />} />
         <Route path="/professor" element={<Professor />} />
+        <Route path="/matriculas" element={<PainelMatriculas />} />
+
       </Routes>
       <Chat />
     </>
