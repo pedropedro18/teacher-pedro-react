@@ -5,9 +5,9 @@ import { db } from "./firebase";
 
 const NIVEIS = ["A1", "A2", "B1", "B2", "C1", "C2"];
 const VAZIO = { aluno: "", nivel: "A1", tema: "", quando: "", link: "" };
-
+S
 // Troca pelo endereço do teu serviço no Render (sem a chave)
-const URL_PAINEL = "https://O-TEU-SERVICO.onrender.com/admin";
+const URL_PAINEL = "https://aulas-matriculas-3.onrender.com/admin";
 
 const formatar = (d) =>
   d.toLocaleString("pt-PT", {
