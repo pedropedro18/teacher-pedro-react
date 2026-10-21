@@ -6,6 +6,9 @@ import { db } from "./firebase";
 const NIVEIS = ["A1", "A2", "B1", "B2", "C1", "C2"];
 const VAZIO = { aluno: "", nivel: "A1", tema: "", quando: "", link: "" };
 
+// Troca pelo endereço do teu serviço no Render (sem a chave)
+const URL_PAINEL = "https://O-TEU-SERVICO.onrender.com/admin";
+
 const formatar = (d) =>
   d.toLocaleString("pt-PT", {
     weekday: "short",
@@ -116,6 +119,24 @@ export default function Professor() {
     <div style={{ padding: 20 }}>
       <h2>Agenda de aulas</h2>
       <button onClick={() => signOut(auth)}>Sair</button>
+
+      <p>
+        <a
+          href={URL_PAINEL}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: "inline-block",
+            padding: "8px 14px",
+            background: "#25d366",
+            color: "#fff",
+            borderRadius: 8,
+            textDecoration: "none",
+          }}
+        >
+          Abrir painel de matrículas
+        </a>
+      </p>
 
       <h3>Marcar aula</h3>
       <input style={campo} placeholder="Aluno (ex.: ana)" value={form.aluno}
