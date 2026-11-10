@@ -1,5 +1,6 @@
 import './Chat.css';
 import './App.css';
+import Aulas from './Aulas';
 import Chat from "./Chat";
 import { Routes, Route } from 'react-router-dom';
 import Header from './header';
@@ -21,6 +22,7 @@ function App() {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/aulas" element={<Aulas />} />
         <Route path="/cursos" element={<Cursos />} />
         <Route path="/exercicios-ingles" element={<ExerciciosNiveis />} />
         <Route path="/contacto" element={<Contacto />} />

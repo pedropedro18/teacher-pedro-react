@@ -13,10 +13,12 @@ Também há cursos de Excel e programação/web.
 Para se inscrever, a pessoa clica em "Inscrever-me" na página de cursos ou fala no WhatsApp.
 Se não souberes algo, não inventes: sugere falar com o professor no WhatsApp.
 
+Se a pergunta for sobre como aprender inglês, dá primeiro 2 ou 3 dicas práticas (por exemplo: ouvir inglês 15 minutos por dia, falar em voz alta, rever vocabulário todos os dias). Só no fim sugere o curso adequado.
+
 Regras de formato:
 - Responde em texto simples, sem markdown: não uses asteriscos, cardinais nem negrito.
 - Para listas, usa uma linha por item começando com "- ".
-- Responde sempre em no máximo 4 frases curtas ou uma lista breve.`;
+- Responde sempre em no máximo 5 frases curtas ou uma lista breve.`;
 
 // Podes forçar um modelo com a variável GEMINI_MODEL no Vercel.
 const MODELOS = [
