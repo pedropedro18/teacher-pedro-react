@@ -1,0 +1,80 @@
+/* Acrescentar ao fim do CSS do header */
+
+/* Botão "Área do Aluno" */
+.site-header .btn-aluno {
+  background: #fde7b0;
+  color: #0a1f5c;
+  padding: 0.5rem 1.1rem;
+  border-radius: 10px;
+  font-weight: 700;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+.site-header .btn-aluno:hover {
+  background: #fff;
+  transform: translateY(-1px);
+}
+
+/* Submenu "Recursos" */
+.site-header .dropdown {
+  position: relative;
+}
+.site-header .dropdown-toggle {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  font-weight: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+.site-header .dropdown-toggle.active {
+  color: #22d3ee;
+}
+.site-header .caret {
+  font-size: 0.75em;
+}
+.site-header .dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 180px;
+  margin-top: 0.75rem;
+  padding: 0.5rem;
+  list-style: none;
+  flex-direction: column;
+  gap: 0.25rem;
+  background: #0a1f5c;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+}
+.site-header .dropdown.open .dropdown-menu {
+  display: flex;
+}
+.site-header .dropdown-menu a {
+  display: block;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+}
+.site-header .dropdown-menu a:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Desktop: abre também ao passar o rato */
+@media (hover: hover) and (min-width: 769px) {
+  .site-header .dropdown:hover .dropdown-menu {
+    display: flex;
+  }
+}
+
+/* Mobile: submenu dentro do menu aberto */
+@media (max-width: 768px) {
+  .site-header .dropdown-menu {
+    position: static;
+    margin-top: 0.5rem;
+    box-shadow: none;
+    background: rgba(255, 255, 255, 0.06);
+  }
+}

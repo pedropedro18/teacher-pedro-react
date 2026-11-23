@@ -1,6 +1,5 @@
 import Hero from '../Hero';
 import Diferenciais from '../Diferenciais';
-import Sobre from '../Sobre';
 import Cursos from '../Cursos';
 import Depoimentos from '../Depoimentos';
 import CTA from '../CTA';
@@ -11,7 +10,6 @@ export default function Home() {
     <>
       <Hero />
       <Diferenciais />
-      <Sobre />
       <Cursos />
       <Depoimentos />
       <CTA />
