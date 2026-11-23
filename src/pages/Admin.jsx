@@ -42,9 +42,10 @@ export default function Admin() {
       });
       if (!res.ok) throw new Error('Falha ao carregar alunos');
       const data = await res.json();
-      setAlunos(data);
+      setAlunos(Array.isArray(data) ? data : []);
     } catch (err) {
       setErro(err.message);
+      setAlunos([]);
     } finally {
       setCarregando(false);
     }
@@ -55,10 +56,12 @@ export default function Admin() {
       const res = await fetch('/api/submissoes', {
         headers: getAuthHeaders()
       });
+      if (!res.ok) throw new Error('Falha ao carregar submissões');
       const data = await res.json();
-      setSubmissoes(data);
+      setSubmissoes(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error('Erro ao carregar submissões:', err);
+      setSubmissoes([]);
     }
   };
 
@@ -67,7 +70,7 @@ export default function Admin() {
     const feedback = feedbackTemp[id];
 
     try {
-      const res = await fetch(`/api/submissoes/${id}`, {
+      const res = await fetch(/api/submissoes/`${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -76,7 +79,7 @@ export default function Admin() {
         body: JSON.stringify({ nota, feedback })
       });
       if (!res.ok) {
-        const data = await res.json();
+        const data = await res.json().catch(() => ({}));
         alert(data.erro || 'Erro ao corrigir');
         return;
       }
@@ -110,12 +113,12 @@ export default function Admin() {
     if (!window.confirm('Tens a certeza que queres apagar esta submissão?')) return;
 
     try {
-      const res = await fetch(`/api/submissoes/${id}`, {
+      const res = await fetch(/api/submissoes/`${id}`, {
         method: 'DELETE',
         headers: getAuthHeaders(),
       });
       if (!res.ok) {
-        const data = await res.json();
+        const data = await res.json().catch(() => ({}));
         alert(data.erro || 'Erro ao apagar submissão');
         return;
       }
@@ -220,7 +223,10 @@ export default function Admin() {
     }
   }
 
-  const alunosFiltrados = alunos.filter((a) => {
+  const listaAlunos = Array.isArray(alunos) ? alunos : [];
+  const listaSubmissoes = Array.isArray(submissoes) ? submissoes : [];
+
+  const alunosFiltrados = listaAlunos.filter((a) => {
     const termo = busca.toLowerCase();
     return (
       a.nome?.toLowerCase().includes(termo) ||
@@ -287,7 +293,7 @@ export default function Admin() {
       </form>
 
       <div className="admin-lista-header">
-        <h2>Alunos ({alunos.length})</h2>
+        <h2>Alunos ({listaAlunos.length})</h2>
         <input
           type="text"
           placeholder="Pesquisar por nome, email ou nível..."
@@ -333,12 +339,12 @@ export default function Admin() {
       )}
 
       <div className="admin-submissoes">
-        <h2>Submissões dos alunos ({submissoes.length})</h2>
-        {submissoes.length === 0 ? (
+        <h2>Submissões dos alunos ({listaSubmissoes.length})</h2>
+        {listaSubmissoes.length === 0 ? (
           <p>Nenhuma submissão por enquanto.</p>
         ) : (
           <ul className="lista-submissoes-admin">
-            {submissoes.map((s) => (
+            {listaSubmissoes.map((s) => (
               <li key={s.id} className="submissao-item">
                 <p><strong>{s.aluno_nome}</strong> — {s.titulo_exercicio} ({s.nivel})</p>
                 <p className="submissao-resposta">Resposta: {s.resposta}</p>
@@ -365,7 +371,7 @@ export default function Admin() {
                       }
                     />
                     <button onClick={() => sugerirComIA(s.id, s.resposta, s.nivel)}>
-                    Sugerir com IA
+                      Sugerir com IA
                     </button>
                     <button onClick={() => handleCorrigir(s.id)}>Corrigir</button>
                   </div>
