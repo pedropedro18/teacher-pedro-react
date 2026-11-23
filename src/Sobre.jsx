@@ -6,7 +6,7 @@ export default function Sobre() {
         {/* Bio */}
         <div className="about-bio">
           <img
-            src="/imagens/logo.png"
+            src="/imagens/apresentacao.jpg"
             alt="Retrato de Teacher Pedro"
             className="about-avatar"
           />

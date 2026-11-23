@@ -565,6 +565,7 @@ section {
   height: 140px;
   border-radius: 50%;
   object-fit: cover;
+  object-position: center 15%;
   border: 2px solid #e3a345;
   padding: 4px;
 }

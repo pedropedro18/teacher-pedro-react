@@ -1,20 +1,20 @@
 import './Chat.css';
 import './App.css';
-import Aulas from './Aulas';
-import Chat from "./Chat";
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
+
 import Header from './header';
+import Chat from './Chat';
+
 import Home from './pages/Home';
 import Cursos from './Cursos';
-import Contacto from './pages/Contacto';
-import Fichas from './Fichas';
-import Blog from './pages/Blog';
-import BlogPost from './pages/BlogPost';
+import Aulas from './Aulas';
 import ExerciciosNiveis from './ExerciciosNiveis';
 import ExerciciosTemas from './ExerciciosTemas';
+import Fichas from './Fichas';
 import Aluno from './Aluno';
 import Professor from './Professor';
 import PainelMatriculas from './PainelMatriculas';
+import Suporte from './pages/Contacto'; // renomeia o ficheiro depois
 
 function App() {
   return (
@@ -22,18 +22,27 @@ function App() {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/aulas" element={<Aulas />} />
         <Route path="/cursos" element={<Cursos />} />
-        <Route path="/exercicios-ingles" element={<ExerciciosNiveis />} />
-        <Route path="/contacto" element={<Contacto />} />
-        <Route path="/blog" element={<Blog />} />
-        <Route path="/blog/:slug" element={<BlogPost />} />
-        <Route path="/exercicios-temas" element={<ExerciciosTemas />} />
+        <Route path="/aulas" element={<Aulas />} />
+        <Route path="/exercicios" element={<ExerciciosNiveis />} />
+        <Route path="/temas" element={<ExerciciosTemas />} />
         <Route path="/fichas" element={<Fichas />} />
-        <Route path="/Aluno" element={<Aluno />} />
+        <Route path="/aluno" element={<Aluno />} />
+        <Route path="/suporte" element={<Suporte />} />
+
+        {/* Área de gestão */}
         <Route path="/professor" element={<Professor />} />
         <Route path="/matriculas" element={<PainelMatriculas />} />
 
+        {/* Redirecionamentos das rotas antigas */}
+        <Route path="/exercicios-ingles" element={<Navigate to="/exercicios" replace />} />
+        <Route path="/exercicios-temas" element={<Navigate to="/temas" replace />} />
+        <Route path="/contacto" element={<Navigate to="/suporte" replace />} />
+        <Route path="/blog" element={<Navigate to="/" replace />} />
+        <Route path="/blog/:slug" element={<Navigate to="/" replace />} />
+        <Route path="/sobre" element={<Navigate to="/" replace />} />
+
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <Chat />
     </>
