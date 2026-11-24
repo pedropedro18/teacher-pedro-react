@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
-import { db, garantirLogin } from "./firebase";
 import AgendaAluno from "./AgendaAluno";
 
 const ORDEM = ["A1", "A2", "B1", "B2", "C1", "C2"];
