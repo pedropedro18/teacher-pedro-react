@@ -12,6 +12,8 @@ import ExerciciosNiveis from './ExerciciosNiveis';
 import ExerciciosTemas from './ExerciciosTemas';
 import Fichas from './Fichas';
 import Aluno from './Aluno';
+import Blog from './pages/Blog';
+import BlogPost from './pages/BlogPost';
 import Suporte from './pages/Contacto'; // renomeia o ficheiro depois
 import { Analytics } from "@vercel/analytics/react";
 
@@ -30,6 +32,9 @@ function App() {
         <Route path="/fichas" element={<Fichas />} />
         <Route path="/aluno" element={<Aluno />} />
         <Route path="/suporte" element={<Suporte />} />
+        <Route path='blog' element={<Blog />} />
+<Route path="/blog" element={<Blog />} />
+<Route path="/blog/:slug" element={<BlogPost />} />
 
         {/* Redirecionamentos das rotas antigas */}
         <Route path="/exercicios-ingles" element={<Navigate to="/exercicios" replace />} />
