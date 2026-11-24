@@ -70,7 +70,7 @@ export default function Admin() {
     const feedback = feedbackTemp[id];
 
     try {
-      const res = await fetch(/api/submissoes/`${id}`, {
+      const res = await fetch(`/api/submissoes/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
