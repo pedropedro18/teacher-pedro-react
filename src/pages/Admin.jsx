@@ -113,7 +113,7 @@ export default function Admin() {
     if (!window.confirm('Tens a certeza que queres apagar esta submissão?')) return;
 
     try {
-      const res = await fetch(/api/submissoes/`${id}`, {
+      const res = await fetch(`/api/submissoes/${id}`, {
         method: 'DELETE',
         headers: getAuthHeaders(),
       });
