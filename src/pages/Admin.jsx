@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import "./Admin.css";
-const API_URL = '/api/alunos';
+import './Admin.css';
 
-const NIVEIS_CEFR = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']
+const API_URL = '/api/alunos';
+const LOGIN_PATH = '/login'; // ajusta se a tua rota de login for outra
+
+const NIVEIS_CEFR = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
 
 const CAMPOS_VAZIOS = {
   nome: '',
@@ -14,6 +16,22 @@ const CAMPOS_VAZIOS = {
 function getAuthHeaders() {
   const token = localStorage.getItem('token');
   return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+async function apiFetch(url, options = {}) {
+  const res = await fetch(url, {
+    ...options,
+    headers: {
+      ...(options.headers || {}),
+      ...getAuthHeaders(),
+    },
+  });
+  if (res.status === 401) {
+    localStorage.removeItem('token');
+    window.location.href = LOGIN_PATH;
+    throw new Error('Sessão expirada. Faz login novamente.');
+  }
+  return res;
 }
 
 export default function Admin() {
@@ -29,6 +47,10 @@ export default function Admin() {
   const [feedbackTemp, setFeedbackTemp] = useState({});
 
   useEffect(() => {
+    if (!localStorage.getItem('token')) {
+      window.location.href = LOGIN_PATH;
+      return;
+    }
     buscarAlunos();
     carregarSubmissoes();
   }, []);
@@ -37,10 +59,11 @@ export default function Admin() {
     setCarregando(true);
     setErro('');
     try {
-      const res = await fetch(API_URL, {
-        headers: getAuthHeaders(),
-      });
-      if (!res.ok) throw new Error('Falha ao carregar alunos');
+      const res = await apiFetch(API_URL);
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || data.erro || 'Falha ao carregar alunos');
+      }
       const data = await res.json();
       setAlunos(Array.isArray(data) ? data : []);
     } catch (err) {
@@ -51,11 +74,9 @@ export default function Admin() {
     }
   }
 
-  const carregarSubmissoes = async () => {
+  async function carregarSubmissoes() {
     try {
-      const res = await fetch('/api/submissoes', {
-        headers: getAuthHeaders()
-      });
+      const res = await apiFetch('/api/submissoes');
       if (!res.ok) throw new Error('Falha ao carregar submissões');
       const data = await res.json();
       setSubmissoes(Array.isArray(data) ? data : []);
@@ -63,24 +84,20 @@ export default function Admin() {
       console.error('Erro ao carregar submissões:', err);
       setSubmissoes([]);
     }
-  };
+  }
 
   async function handleCorrigir(id) {
     const nota = notaTemp[id];
     const feedback = feedbackTemp[id];
-
     try {
-      const res = await fetch(`/api/submissoes/${id}`, {
+      const res = await apiFetch(`/api/submissoes/${id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          ...getAuthHeaders()
-        },
-        body: JSON.stringify({ nota, feedback })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nota, feedback }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        alert(data.erro || 'Erro ao corrigir');
+        alert(data.erro || data.error || 'Erro ao corrigir');
         return;
       }
       carregarSubmissoes();
@@ -91,16 +108,12 @@ export default function Admin() {
 
   async function sugerirComIA(id, resposta, nivel) {
     try {
-      const res = await fetch('/api/corrigir', {
+      const res = await apiFetch('/api/corrigir', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...getAuthHeaders()
-        },
-        body: JSON.stringify({ texto: resposta, nivel })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ texto: resposta, nivel }),
       });
       const dados = await res.json();
-
       if (dados.corrected_text) {
         setFeedbackTemp((prev) => ({ ...prev, [id]: dados.feedback }));
       }
@@ -111,15 +124,11 @@ export default function Admin() {
 
   async function apagarSubmissao(id) {
     if (!window.confirm('Tens a certeza que queres apagar esta submissão?')) return;
-
     try {
-      const res = await fetch(`/api/submissoes/${id}`, {
-        method: 'DELETE',
-        headers: getAuthHeaders(),
-      });
+      const res = await apiFetch(`/api/submissoes/${id}`, { method: 'DELETE' });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        alert(data.erro || 'Erro ao apagar submissão');
+        alert(data.erro || data.error || 'Erro ao apagar submissão');
         return;
       }
       setSubmissoes((prev) => prev.filter((s) => s.id !== id));
@@ -155,27 +164,20 @@ export default function Admin() {
       setErro('Nome e email são obrigatórios');
       return;
     }
-
     setEnviando(true);
     setErro('');
     try {
       const url = editandoId ? `${API_URL}/${editandoId}` : API_URL;
       const method = editandoId ? 'PUT' : 'POST';
-
-      const res = await fetch(url, {
+      const res = await apiFetch(url, {
         method,
-        headers: {
-          'Content-Type': 'application/json',
-          ...getAuthHeaders(),
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       });
-
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.erro || 'Erro ao guardar aluno');
+        throw new Error(data.erro || data.error || 'Erro ao guardar aluno');
       }
-
       await buscarAlunos();
       cancelarEdicao();
     } catch (err) {
@@ -187,13 +189,9 @@ export default function Admin() {
 
   async function apagarAluno(id) {
     if (!window.confirm('Tens a certeza que queres apagar este aluno?')) return;
-
     setErro('');
     try {
-      const res = await fetch(`${API_URL}/${id}`, {
-        method: 'DELETE',
-        headers: getAuthHeaders(),
-      });
+      const res = await apiFetch(`${API_URL}/${id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Erro ao apagar aluno');
       setAlunos((prev) => prev.filter((a) => a.id !== id));
       if (editandoId === id) cancelarEdicao();
@@ -205,15 +203,11 @@ export default function Admin() {
   async function definirPassword(id) {
     const password = window.prompt('Nova password para este aluno:');
     if (!password) return;
-
     setErro('');
     try {
-      const res = await fetch(`${API_URL}/${id}/password`, {
+      const res = await apiFetch(`${API_URL}/${id}/password`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          ...getAuthHeaders(),
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password }),
       });
       if (!res.ok) throw new Error('Erro ao definir password');
@@ -221,6 +215,11 @@ export default function Admin() {
     } catch (err) {
       setErro(err.message);
     }
+  }
+
+  function sair() {
+    localStorage.removeItem('token');
+    window.location.href = LOGIN_PATH;
   }
 
   const listaAlunos = Array.isArray(alunos) ? alunos : [];
@@ -238,6 +237,9 @@ export default function Admin() {
   return (
     <div className="admin-page">
       <h1>Painel de Administração — Alunos</h1>
+      <button type="button" onClick={sair} className="btn-cancelar">
+        Sair
+      </button>
 
       {erro && <div className="admin-erro">{erro}</div>}
 
@@ -261,14 +263,12 @@ export default function Admin() {
             onChange={handleChange}
             required
           />
-          <select
-            name="nivel_cefr"
-            value={form.nivel_cefr}
-            onChange={handleChange}
-          >
+          <select name="nivel_cefr" value={form.nivel_cefr} onChange={handleChange}>
             <option value="">Nível CEFR</option>
             {NIVEIS_CEFR.map((nivel) => (
-              <option key={nivel} value={nivel}>{nivel}</option>
+              <option key={nivel} value={nivel}>
+                {nivel}
+              </option>
             ))}
           </select>
           <input
@@ -346,7 +346,9 @@ export default function Admin() {
           <ul className="lista-submissoes-admin">
             {listaSubmissoes.map((s) => (
               <li key={s.id} className="submissao-item">
-                <p><strong>{s.aluno_nome}</strong> — {s.titulo_exercicio} ({s.nivel})</p>
+                <p>
+                  <strong>{s.aluno_nome}</strong> — {s.titulo_exercicio} ({s.nivel})
+                </p>
                 <p className="submissao-resposta">Resposta: {s.resposta}</p>
 
                 {s.corrigido ? (
@@ -359,9 +361,7 @@ export default function Admin() {
                       type="number"
                       placeholder="Nota"
                       value={notaTemp[s.id] ?? ''}
-                      onChange={(e) =>
-                        setNotaTemp({ ...notaTemp, [s.id]: e.target.value })
-                      }
+                      onChange={(e) => setNotaTemp({ ...notaTemp, [s.id]: e.target.value })}
                     />
                     <textarea
                       placeholder="Feedback"
