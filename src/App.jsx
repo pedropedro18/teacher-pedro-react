@@ -13,6 +13,8 @@ import ExerciciosTemas from './ExerciciosTemas';
 import Fichas from './Fichas';
 import Aluno from './Aluno';
 import Suporte from './pages/Contacto'; // renomeia o ficheiro depois
+import { Analytics } from "@vercel/analytics/react";
+
 
 function App() {
   return (
