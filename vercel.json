@@ -1,4 +1,9 @@
 {
+  "functions": {
+    "api/handler.js": {
+      "includeFiles": "api/**"
+    }
+  },
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/handler" },
     { "source": "/(.*)", "destination": "/index.html" }
