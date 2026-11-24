@@ -11,13 +11,10 @@ import { loginAluno, definirPasswordAluno, meuPerfil, verificarTokenAluno } from
 import certificadoRouter from './api/certificado.js';
 import materiaisRoutes from './api/materiais.js';
 import { corrigirComIA } from './api/corrigirIA.js';
+import aulasRouter from './api/aulas.js';
 
- 
-  
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -35,9 +32,10 @@ app.use('/api/alunos', verificarToken, alunosRouter);
 app.use('/api', certificadoRouter);
 app.use('/api/aluno', resultadoRouter);
 app.use('/api/materiais', materiaisRoutes);
+app.use('/api/aulas', aulasRouter);
 
 app.post('/api/corrigir', async (req, res) => {
-   console.log('🔥 ROTA CORRIGIR CHAMADA'); // linha nova
+  console.log('🔥 ROTA CORRIGIR CHAMADA');
   const { texto, nivel } = req.body;
 
   if (!texto || !nivel) {
@@ -53,8 +51,6 @@ app.post('/api/corrigir', async (req, res) => {
   res.json(resultado);
 });
 
-
-
 // Serve os arquivos estáticos do build do React
 app.use(express.static(path.join(__dirname, 'dist')));
 
@@ -65,5 +61,4 @@ app.get('/*splat', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Servidor a correr em http://localhost:${PORT}`);
-
 });

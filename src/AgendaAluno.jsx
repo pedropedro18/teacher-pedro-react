@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import { collection, query, where, getDocs } from "firebase/firestore";
-import { db } from "./firebase";
 
 const DURACAO_MIN = 60;
 const AVISO_MIN = 60;
@@ -23,11 +21,14 @@ export default function AgendaAluno({ nomeAluno }) {
     let ativo = true;
     (async () => {
       try {
-        const snap = await getDocs(
-          query(collection(db, "aulas"), where("aluno", "==", nomeAluno.trim().toLowerCase()))
+        const base = import.meta.env.VITE_API_URL || "";
+        const res = await fetch(
+          `${base}/api/aulas?aluno=${encodeURIComponent(nomeAluno.trim().toLowerCase())}`
         );
-        const lista = snap.docs
-          .map((d) => ({ id: d.id, ...d.data(), data: d.data().data.toDate() }))
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const dados = await res.json();
+        const lista = dados
+          .map((a) => ({ ...a, data: new Date(a.data) }))
           .sort((a, b) => a.data - b.data);
         if (ativo) setAulas(lista);
       } catch (e) {
