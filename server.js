@@ -1,17 +1,17 @@
 import 'dotenv/config';
 import express from 'express';
-import resultadoRouter from './api/resultado.js';
+import resultadoRouter from './backend/resultado.js';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import alunosRouter from './api/alunos.js';
-import submissoesRouter from './api/submissoes.js';
-import { login, verificarToken } from './api/auth.js';
-import { loginAluno, definirPasswordAluno, meuPerfil, verificarTokenAluno } from './api/alunoAuth.js';
-import certificadoRouter from './api/certificado.js';
-import materiaisRoutes from './api/materiais.js';
-import { corrigirComIA } from './api/corrigirIA.js';
-import aulasRouter from './api/aulas.js';
+import alunosRouter from './backend/alunos.js';
+import submissoesRouter from './backend/submissoes.js';
+import { login, verificarToken } from './backend/auth.js';
+import { loginAluno, definirPasswordAluno, meuPerfil, verificarTokenAluno } from './backend/alunoAuth.js';
+import certificadoRouter from './backend/certificado.js';
+import materiaisRoutes from './backend/materiais.js';
+import { corrigirComIA } from './backend/corrigirIA.js';
+import aulasRouter from './backend/aulas.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
