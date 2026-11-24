@@ -59,6 +59,11 @@ app.get('/*splat', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
-app.listen(PORT, () => {
-  console.log(`Servidor a correr em http://localhost:${PORT}`);
-});
+// Só arranca o servidor localmente; na Vercel o app é usado como função
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`Servidor a correr em http://localhost:${PORT}`);
+  });
+}
+
+export default app;
