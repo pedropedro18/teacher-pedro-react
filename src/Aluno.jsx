@@ -60,21 +60,25 @@ export default function Aluno() {
   const [aluno, setAluno] = useState(null);
   const [erro, setErro] = useState("");
 
-  const entrar = async () => {
-    setErro("");
-    try {
-      await garantirLogin();
-      const snap = await getDoc(doc(db, "chaves", chave.trim()));
-      if (!snap.exists()) {
-        setErro("Chave inválida ou expirada.");
-        return;
-      }
-      setAluno(snap.data());
-    } catch (e) {
-      console.error(e);
-      setErro("Erro ao entrar: " + (e.code || e.message));
+ const entrar = async () => {
+  setErro("");
+  try {
+    const res = await fetch("/api/alunos/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chave: chave.trim() }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      setErro(data.erro || "Chave inválida ou expirada.");
+      return;
     }
-  };
+    setAluno(data.aluno || data);
+  } catch (e) {
+    console.error(e);
+    setErro("Erro ao entrar: " + e.message);
+  }
+};
 
   if (!aluno) {
     return (
