@@ -56,8 +56,8 @@ const ouvir = (texto) => {
 };
 
 export default function Aluno() {
-  const [chave, setChave] = useState("");
-  const [aluno, setAluno] = useState(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [erro, setErro] = useState("");
 
  const entrar = async () => {
@@ -80,18 +80,30 @@ export default function Aluno() {
   }
 };
 
-  if (!aluno) {
-    return (
-      <div style={{ padding: 20 }}>
-        <h2>Área do aluno</h2>
-        <input value={chave} onChange={(e) => setChave(e.target.value)} placeholder="Chave de acesso" />
-        <button onClick={entrar}>Entrar</button>
-        {erro && <p style={{ color: "red" }}>{erro}</p>}
-      </div>
-    );
-  }
+ if (!aluno) {
+  return (
+    <div style={{ padding: 20 }}>
+      <h2>Área do aluno</h2>
+      <input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Email"
+      />
+      <input
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        placeholder="Palavra-passe"
+        onKeyDown={(e) => e.key === "Enter" && entrar()}
+      />
+      <button onClick={entrar}>Entrar</button>
+      {erro && <p style={{ color: "red" }}>{erro}</p>}
+    </div>
+  );
+}
 
-  const niveis = ORDEM.filter((n) => (aluno.niveis || []).includes(n));
+  const niveis = ORDEM.filter((n) => n === aluno.nivel_cefr);
 
   return (
     <div style={{ padding: 20 }}>
