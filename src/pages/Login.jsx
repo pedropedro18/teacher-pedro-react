@@ -24,7 +24,7 @@ function Login() {
         setErro(data.error || 'Erro ao entrar');
         return;
       }
-
+      console.log('RESPOSTA LOGIN:',data);
       localStorage.setItem('token', data.token);
       navigate('/admin');
     } catch (err) {

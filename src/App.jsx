@@ -12,6 +12,7 @@ import ExerciciosNiveis from './ExerciciosNiveis';
 import ExerciciosTemas from './ExerciciosTemas';
 import Fichas from './Fichas';
 import Aluno from './Aluno';
+import Login from './pages/Login';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import Suporte from './pages/Contacto'; // renomeia o ficheiro depois
@@ -25,6 +26,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/cursos" element={<Cursos />} />
         <Route path="/aulas" element={<Aulas />} />
         <Route path="/exercicios" element={<ExerciciosNiveis />} />
@@ -32,17 +34,12 @@ function App() {
         <Route path="/fichas" element={<Fichas />} />
         <Route path="/aluno" element={<Aluno />} />
         <Route path="/suporte" element={<Suporte />} />
-        <Route path='blog' element={<Blog />} />
-<Route path="/blog" element={<Blog />} />
-<Route path="/blog/:slug" element={<BlogPost />} />
-
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:slug" element={<BlogPost />} />
         {/* Redirecionamentos das rotas antigas */}
         <Route path="/exercicios-ingles" element={<Navigate to="/exercicios" replace />} />
         <Route path="/exercicios-temas" element={<Navigate to="/temas" replace />} />
         <Route path="/contacto" element={<Navigate to="/suporte" replace />} />
-        <Route path="/blog" element={<Navigate to="/" replace />} />
-        <Route path="/blog/:slug" element={<Navigate to="/" replace />} />
-
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <Chat />

@@ -2,16 +2,11 @@ import React, { useEffect, useState } from 'react';
 import './Admin.css';
 
 const API_URL = '/api/alunos';
-const LOGIN_PATH = '/login'; // ajusta se a tua rota de login for outra
+const LOGIN_PATH = '/login';
 
 const NIVEIS_CEFR = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
 
-const CAMPOS_VAZIOS = {
-  nome: '',
-  email: '',
-  nivel_cefr: '',
-  telefone: '',
-};
+const CAMPOS_VAZIOS = { nome: '', email: '', nivel_cefr: '', telefone: '' };
 
 function getAuthHeaders() {
   const token = localStorage.getItem('token');
@@ -21,15 +16,10 @@ function getAuthHeaders() {
 async function apiFetch(url, options = {}) {
   const res = await fetch(url, {
     ...options,
-    headers: {
-      ...(options.headers || {}),
-      ...getAuthHeaders(),
-    },
+    headers: { ...(options.headers || {}), ...getAuthHeaders() },
   });
   if (res.status === 401) {
-    localStorage.removeItem('token');
-    window.location.href = LOGIN_PATH;
-    throw new Error('Sessão expirada. Faz login novamente.');
+    throw new Error('401: a API recusou o token. Faz login novamente.');
   }
   return res;
 }
@@ -38,6 +28,7 @@ export default function Admin() {
   const [alunos, setAlunos] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState('');
+  const [semToken, setSemToken] = useState(false);
   const [form, setForm] = useState(CAMPOS_VAZIOS);
   const [editandoId, setEditandoId] = useState(null);
   const [enviando, setEnviando] = useState(false);
@@ -47,8 +38,11 @@ export default function Admin() {
   const [feedbackTemp, setFeedbackTemp] = useState({});
 
   useEffect(() => {
-    if (!localStorage.getItem('token')) {
-      window.location.href = LOGIN_PATH;
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setSemToken(true);
+      setErro('SEM TOKEN: o login não guardou "token" no localStorage.');
+      setCarregando(false);
       return;
     }
     buscarAlunos();
@@ -62,7 +56,7 @@ export default function Admin() {
       const res = await apiFetch(API_URL);
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || data.erro || 'Falha ao carregar alunos');
+        throw new Error(data.error || data.erro || `Falha ao carregar alunos (status ${res.status})`);
       }
       const data = await res.json();
       setAlunos(Array.isArray(data) ? data : []);
@@ -77,7 +71,7 @@ export default function Admin() {
   async function carregarSubmissoes() {
     try {
       const res = await apiFetch('/api/submissoes');
-      if (!res.ok) throw new Error('Falha ao carregar submissões');
+      if (!res.ok) throw new Error(`Falha ao carregar submissões (status ${res.status})`);
       const data = await res.json();
       setSubmissoes(Array.isArray(data) ? data : []);
     } catch (err) {
@@ -102,7 +96,7 @@ export default function Admin() {
       }
       carregarSubmissoes();
     } catch (err) {
-      console.error('Erro ao corrigir submissão:', err);
+      setErro(err.message);
     }
   }
 
@@ -118,7 +112,7 @@ export default function Admin() {
         setFeedbackTemp((prev) => ({ ...prev, [id]: dados.feedback }));
       }
     } catch (err) {
-      console.error('Erro ao sugerir correção com IA:', err);
+      setErro(err.message);
     }
   }
 
@@ -133,7 +127,7 @@ export default function Admin() {
       }
       setSubmissoes((prev) => prev.filter((s) => s.id !== id));
     } catch (err) {
-      console.error('Erro ao apagar submissão:', err);
+      setErro(err.message);
     }
   }
 
@@ -241,43 +235,30 @@ export default function Admin() {
         Sair
       </button>
 
-      {erro && <div className="admin-erro">{erro}</div>}
+      {erro && (
+        <div className="admin-erro">
+          {erro}
+          {semToken && (
+            <p>
+              <a href={LOGIN_PATH}>Ir para o login</a>
+            </p>
+          )}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="admin-form">
         <h2>{editandoId ? 'Editar aluno' : 'Adicionar novo aluno'}</h2>
 
         <div className="admin-form-grid">
-          <input
-            type="text"
-            name="nome"
-            placeholder="Nome"
-            value={form.nome}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={form.email}
-            onChange={handleChange}
-            required
-          />
+          <input type="text" name="nome" placeholder="Nome" value={form.nome} onChange={handleChange} required />
+          <input type="email" name="email" placeholder="Email" value={form.email} onChange={handleChange} required />
           <select name="nivel_cefr" value={form.nivel_cefr} onChange={handleChange}>
             <option value="">Nível CEFR</option>
             {NIVEIS_CEFR.map((nivel) => (
-              <option key={nivel} value={nivel}>
-                {nivel}
-              </option>
+              <option key={nivel} value={nivel}>{nivel}</option>
             ))}
           </select>
-          <input
-            type="tel"
-            name="telefone"
-            placeholder="Telefone"
-            value={form.telefone}
-            onChange={handleChange}
-          />
+          <input type="tel" name="telefone" placeholder="Telefone" value={form.telefone} onChange={handleChange} />
         </div>
 
         <div className="admin-form-botoes">
@@ -328,9 +309,7 @@ export default function Admin() {
                 <td className="admin-acoes">
                   <button onClick={() => iniciarEdicao(aluno)}>Editar</button>
                   <button onClick={() => definirPassword(aluno.id)}>Definir password</button>
-                  <button onClick={() => apagarAluno(aluno.id)} className="btn-apagar">
-                    Apagar
-                  </button>
+                  <button onClick={() => apagarAluno(aluno.id)} className="btn-apagar">Apagar</button>
                 </td>
               </tr>
             ))}
@@ -366,20 +345,14 @@ export default function Admin() {
                     <textarea
                       placeholder="Feedback"
                       value={feedbackTemp[s.id] ?? ''}
-                      onChange={(e) =>
-                        setFeedbackTemp({ ...feedbackTemp, [s.id]: e.target.value })
-                      }
+                      onChange={(e) => setFeedbackTemp({ ...feedbackTemp, [s.id]: e.target.value })}
                     />
-                    <button onClick={() => sugerirComIA(s.id, s.resposta, s.nivel)}>
-                      Sugerir com IA
-                    </button>
+                    <button onClick={() => sugerirComIA(s.id, s.resposta, s.nivel)}>Sugerir com IA</button>
                     <button onClick={() => handleCorrigir(s.id)}>Corrigir</button>
                   </div>
                 )}
 
-                <button onClick={() => apagarSubmissao(s.id)} className="btn-apagar">
-                  Apagar
-                </button>
+                <button onClick={() => apagarSubmissao(s.id)} className="btn-apagar">Apagar</button>
               </li>
             ))}
           </ul>
