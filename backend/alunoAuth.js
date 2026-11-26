@@ -4,16 +4,27 @@ import db from './db.js';
 
 const SECRET = process.env.JWT_SECRET;
 
-// Login do aluno
+// Login do aluno (email + password)
 export async function loginAluno(req, res) {
-  const { email, password } = req.body;
+  const { email, password } = req.body || {};
+
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Email e password obrigatórios' });
+  }
 
   try {
-    const [rows] = await db.query('SELECT * FROM alunos WHERE email = ?', [email]);
+    const [rows] = await db.query(
+      'SELECT * FROM alunos WHERE LOWER(email) = LOWER(?)',
+      [String(email).trim()]
+    );
     const aluno = rows[0];
 
     if (!aluno || !aluno.password_hash) {
       return res.status(401).json({ error: 'Credenciais inválidas' });
+    }
+
+    if (aluno.ativo === false) {
+      return res.status(403).json({ error: 'Conta desativada' });
     }
 
     const valido = await bcrypt.compare(password, aluno.password_hash);
@@ -29,7 +40,12 @@ export async function loginAluno(req, res) {
 
     res.json({
       token,
-      aluno: { id: aluno.id, nome: aluno.nome, email: aluno.email, nivel_cefr: aluno.nivel_cefr }
+      aluno: {
+        id: aluno.id,
+        nome: aluno.nome,
+        email: aluno.email,
+        nivel_cefr: aluno.nivel_cefr,
+      },
     });
   } catch (err) {
     console.error(err);
@@ -40,7 +56,7 @@ export async function loginAluno(req, res) {
 // Define/altera a password de um aluno
 export async function definirPasswordAluno(req, res) {
   const { id } = req.params;
-  const { password } = req.body;
+  const { password } = req.body || {};
 
   if (!password || password.length < 3) {
     return res.status(400).json({ error: 'Password inválida' });
@@ -54,8 +70,10 @@ export async function definirPasswordAluno(req, res) {
     console.error(err);
     res.status(500).json({ error: 'Erro ao definir password' });
   }
-  }
-  export async function meuPerfil(req, res) {
+}
+
+// Perfil do aluno autenticado
+export async function meuPerfil(req, res) {
   try {
     const [rows] = await db.query(
       'SELECT id, nome, email, nivel_cefr, telefone FROM alunos WHERE id = ?',
@@ -89,5 +107,3 @@ export function verificarTokenAluno(req, res, next) {
     res.status(401).json({ error: 'Token inválido' });
   }
 }
-
-    

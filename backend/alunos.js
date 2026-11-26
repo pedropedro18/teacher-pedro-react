@@ -1,11 +1,27 @@
 import express from 'express';
-const router = express.Router();
 import db from './db.js';
-import { loginAluno, definirPasswordAluno, verificarTokenAluno } from './alunoAuth.js';
+import {
+  loginAluno,
+  definirPasswordAluno,
+  verificarTokenAluno,
+  meuPerfil,
+} from './alunoAuth.js';
 
+const router = express.Router();
+
+// Colunas seguras (nunca devolver password_hash)
+const CAMPOS = 'id, nome, email, nivel_cefr, telefone, ativo, criado_em';
+
+// Login do aluno
+router.post('/login', loginAluno);
+
+// Perfil do aluno autenticado (tem de vir antes de '/:id')
+router.get('/me', verificarTokenAluno, meuPerfil);
+
+// Listar alunos
 router.get('/', async (req, res) => {
   try {
-    const [rows] = await db.query('SELECT * FROM alunos');
+    const [rows] = await db.query(`SELECT ${CAMPOS} FROM alunos ORDER BY nome`);
     res.json(rows);
   } catch (err) {
     res.status(500).json({ erro: err.message });
@@ -15,7 +31,7 @@ router.get('/', async (req, res) => {
 // Buscar um aluno por ID
 router.get('/:id', async (req, res) => {
   try {
-    const [rows] = await db.query('SELECT * FROM alunos WHERE id = ?', [req.params.id]);
+    const [rows] = await db.query(`SELECT ${CAMPOS} FROM alunos WHERE id = ?`, [req.params.id]);
     if (rows.length === 0) return res.status(404).json({ erro: 'Aluno não encontrado' });
     res.json(rows[0]);
   } catch (err) {
@@ -29,7 +45,7 @@ router.post('/', async (req, res) => {
   try {
     const [result] = await db.query(
       'INSERT INTO alunos (nome, email, nivel_cefr, telefone) VALUES (?, ?, ?, ?)',
-      [nome, email, nivel_cefr, telefone]
+      [nome, email ? email.trim() : email, nivel_cefr, telefone]
     );
     res.status(201).json({ id: result.insertId, nome, email, nivel_cefr, telefone });
   } catch (err) {
@@ -43,13 +59,16 @@ router.put('/:id', async (req, res) => {
   try {
     await db.query(
       'UPDATE alunos SET nome=?, email=?, nivel_cefr=?, telefone=? WHERE id=?',
-      [nome, email, nivel_cefr, telefone, req.params.id]
+      [nome, email ? email.trim() : email, nivel_cefr, telefone, req.params.id]
     );
     res.json({ mensagem: 'Aluno atualizado' });
   } catch (err) {
     res.status(500).json({ erro: err.message });
   }
 });
+
+// Definir/alterar password do aluno
+router.put('/:id/password', definirPasswordAluno);
 
 // Apagar aluno
 router.delete('/:id', async (req, res) => {
@@ -60,9 +79,5 @@ router.delete('/:id', async (req, res) => {
     res.status(500).json({ erro: err.message });
   }
 });
-// Login do aluno
-router.post('/login', loginAluno);
 
-// Definir/alterar password do aluno
-router.put('/:id/password', definirPasswordAluno);
 export default router;
