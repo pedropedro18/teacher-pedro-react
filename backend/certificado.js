@@ -1,6 +1,6 @@
 import express from 'express';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
-import db from './db.js'; // ajusta este caminho se o teu ficheiro de conexão MySQL tiver outro nome/local
+import db from './db.js';
 import { verificarTokenAluno } from './alunoAuth.js';
 
 const router = express.Router();
@@ -11,8 +11,8 @@ router.get('/certificado/:nivel', verificarTokenAluno, async (req, res) => {
     const { nivel } = req.params; // ex: 'A1'
 
     // 1. Buscar nome e email do aluno
-    const [alunoRows] = await db.query(
-      'SELECT nome, email FROM alunos WHERE id = ?',
+    const { rows: alunoRows } = await db.query(
+      'SELECT nome, email FROM alunos WHERE id = $1',
       [alunoId]
     );
 
@@ -21,17 +21,16 @@ router.get('/certificado/:nivel', verificarTokenAluno, async (req, res) => {
     }
 
     const nomeAluno = alunoRows[0].nome;
-    const emailAluno = alunoRows[0].email;
 
     // 2. Verificar se o aluno completou o nível
-    const [resultado] = await db.query(
-      `SELECT COUNT(*) as total, SUM(CASE WHEN nota >= 7 THEN 1 ELSE 0 END) as aprovadas
-       FROM submissoes WHERE aluno_id = ? AND nivel = ?`,
+    const { rows: resultado } = await db.query(
+      `SELECT COUNT(*) AS total, SUM(CASE WHEN nota >= 7 THEN 1 ELSE 0 END) AS aprovadas
+       FROM submissoes WHERE aluno_id = $1 AND nivel = $2`,
       [alunoId, nivel]
     );
 
-    const totalExercicios = 1; // ajusta este número conforme quantas lições/exercícios cada nível realmente tem
-    const aprovadas = resultado[0].aprovadas || 0;
+    const totalExercicios = 1; // ajuste conforme o número de exercícios de cada nível
+    const aprovadas = Number(resultado[0].aprovadas) || 0;
 
     if (aprovadas < totalExercicios) {
       return res.status(403).json({
@@ -53,7 +52,7 @@ router.get('/certificado/:nivel', verificarTokenAluno, async (req, res) => {
     const cinza = rgb(0.4, 0.4, 0.4);
     const cinzaClaro = rgb(0.55, 0.55, 0.55);
 
-    // Fundo com leve moldura externa
+    // Fundo
     page.drawRectangle({
       x: 0,
       y: 0,
@@ -72,7 +71,7 @@ router.get('/certificado/:nivel', verificarTokenAluno, async (req, res) => {
       borderWidth: 2,
     });
 
-    // Borda interna azul (moldura dupla)
+    // Borda interna azul
     page.drawRectangle({
       x: 30,
       y: 30,
@@ -82,7 +81,7 @@ router.get('/certificado/:nivel', verificarTokenAluno, async (req, res) => {
       borderWidth: 1.5,
     });
 
-    // Cantos decorativos (pequenos quadrados nos 4 cantos da moldura interna)
+    // Cantos decorativos
     const cantoSize = 10;
     const cantos = [
       [30, 30],
@@ -112,7 +111,7 @@ router.get('/certificado/:nivel', verificarTokenAluno, async (req, res) => {
       color: azulEscuro,
     });
 
-    // Linha decorativa curta sob o título
+    // Linha sob o título
     const linhaWidth = 160;
     page.drawLine({
       start: { x: (width - linhaWidth) / 2, y: height - 128 },
@@ -121,7 +120,7 @@ router.get('/certificado/:nivel', verificarTokenAluno, async (req, res) => {
       color: dourado,
     });
 
-    // Subtítulo (nome da escola)
+    // Subtítulo
     const subtitulo = 'Pedro English School';
     const subtituloSize = 15;
     const subtituloWidth = fontItalic.widthOfTextAtSize(subtitulo, subtituloSize);
@@ -133,7 +132,7 @@ router.get('/certificado/:nivel', verificarTokenAluno, async (req, res) => {
       color: azulClaro,
     });
 
-    // Texto "Certificamos que"
+    // "Certificamos que"
     const certificamos = 'Certificamos que';
     const certificamosSize = 13;
     const certificamosWidth = fontRegular.widthOfTextAtSize(certificamos, certificamosSize);
@@ -145,7 +144,7 @@ router.get('/certificado/:nivel', verificarTokenAluno, async (req, res) => {
       color: cinza,
     });
 
-    // Nome do aluno (destaque principal)
+    // Nome do aluno
     const nomeSize = 30;
     const nomeWidth = fontBold.widthOfTextAtSize(nomeAluno, nomeSize);
     page.drawText(nomeAluno, {
@@ -156,7 +155,7 @@ router.get('/certificado/:nivel', verificarTokenAluno, async (req, res) => {
       color: azulEscuro,
     });
 
-    // Pequena linha sob o nome
+    // Linha sob o nome
     const linhaNomeWidth = Math.max(nomeWidth + 60, 220);
     page.drawLine({
       start: { x: (width - linhaNomeWidth) / 2, y: height - 272 },
@@ -175,10 +174,9 @@ router.get('/certificado/:nivel', verificarTokenAluno, async (req, res) => {
       size: textoNivelSize,
       font: fontRegular,
       color: rgb(0.15, 0.15, 0.15),
-   
     });
 
-    // Selo circular simples (canto inferior direito, decorativo)
+    // Selo circular
     const seloX = width - 130;
     const seloY = 110;
     page.drawCircle({
@@ -207,7 +205,7 @@ router.get('/certificado/:nivel', verificarTokenAluno, async (req, res) => {
       color: dourado,
     });
 
-    // Linha de assinatura (canto inferior esquerdo)
+    // Linha de assinatura
     const assinaturaLinhaWidth = 160;
     const assinaturaX = 110;
     page.drawLine({

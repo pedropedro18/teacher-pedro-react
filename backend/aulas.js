@@ -1,5 +1,4 @@
 import express from 'express';
-// AJUSTE esta linha ao que o seu api/db.js exporta (ex.: pool, sql ou default)
 import pool from './db.js';
 
 const router = express.Router();
