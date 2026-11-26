@@ -59,56 +59,59 @@ export default function Aluno() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [erro, setErro] = useState("");
+  const [aluno, setAluno] = useState(null);
 
- const entrar = async () => {
-  setErro("");
-  try {
-    const res = await fetch("/api/alunos/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ chave: chave.trim() }),
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      setErro(data.erro || "Chave inválida ou expirada.");
-      return;
+  const entrar = async () => {
+    setErro("");
+    try {
+      const res = await fetch("/api/alunos/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), password }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setErro(data.erro || "Email ou palavra-passe inválidos.");
+        return;
+      }
+      setAluno(data.aluno || data);
+    } catch (e) {
+      console.error(e);
+      setErro("Erro ao entrar: " + e.message);
     }
-    setAluno(data.aluno || data);
-  } catch (e) {
-    console.error(e);
-    setErro("Erro ao entrar: " + e.message);
+  };
+
+  if (!aluno) {
+    return (
+      <div style={{ padding: 20 }}>
+        <h2>Área do aluno</h2>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
+        />
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Palavra-passe"
+          onKeyDown={(e) => e.key === "Enter" && entrar()}
+        />
+        <button onClick={entrar}>Entrar</button>
+        {erro && <p style={{ color: "red" }}>{erro}</p>}
+      </div>
+    );
   }
-};
 
- if (!aluno) {
-  return (
-    <div style={{ padding: 20 }}>
-      <h2>Área do aluno</h2>
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email"
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Palavra-passe"
-        onKeyDown={(e) => e.key === "Enter" && entrar()}
-      />
-      <button onClick={entrar}>Entrar</button>
-      {erro && <p style={{ color: "red" }}>{erro}</p>}
-    </div>
-  );
-}
-
+  // O backend devolve "nome"; mantém fallback para "aluno" caso o login use outro formato
+  const nomeAluno = aluno.nome || aluno.aluno || "";
   const niveis = ORDEM.filter((n) => n === aluno.nivel_cefr);
 
   return (
     <div style={{ padding: 20 }}>
-      <h2>Olá, {aluno.aluno}!</h2>
-      <AgendaAluno nomeAluno={aluno.aluno} />
+      <h2>Olá, {nomeAluno}!</h2>
+      <AgendaAluno nomeAluno={nomeAluno} />
       {niveis.length === 0 && <p>Ainda não tens níveis atribuídos.</p>}
       {niveis.map((n) => (
         <section key={n} style={{ marginBottom: 24 }}>
