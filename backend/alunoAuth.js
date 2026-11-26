@@ -13,11 +13,12 @@ export async function loginAluno(req, res) {
   }
 
   try {
-    const [rows] = await db.query(
-      'SELECT * FROM alunos WHERE LOWER(email) = LOWER(?)',
+    const { rows } = await db.query(
+      'SELECT * FROM alunos WHERE LOWER(email) = LOWER($1)',
       [String(email).trim()]
     );
     const aluno = rows[0];
+    console.log('Aluno encontrado?', !!aluno);
 
     if (!aluno || !aluno.password_hash) {
       return res.status(401).json({ error: 'Credenciais inválidas' });
@@ -28,6 +29,8 @@ export async function loginAluno(req, res) {
     }
 
     const valido = await bcrypt.compare(password, aluno.password_hash);
+    console.log('Password correta?', valido);
+
     if (!valido) {
       return res.status(401).json({ error: 'Credenciais inválidas' });
     }
@@ -48,7 +51,7 @@ export async function loginAluno(req, res) {
       },
     });
   } catch (err) {
-    console.error(err);
+    console.error('ERRO LOGIN ALUNO:', err);
     res.status(500).json({ error: 'Erro no servidor' });
   }
 }
@@ -64,7 +67,7 @@ export async function definirPasswordAluno(req, res) {
 
   try {
     const hash = await bcrypt.hash(password, 10);
-    await db.query('UPDATE alunos SET password_hash = ? WHERE id = ?', [hash, id]);
+    await db.query('UPDATE alunos SET password_hash = $1 WHERE id = $2', [hash, id]);
     res.json({ ok: true });
   } catch (err) {
     console.error(err);
@@ -75,8 +78,8 @@ export async function definirPasswordAluno(req, res) {
 // Perfil do aluno autenticado
 export async function meuPerfil(req, res) {
   try {
-    const [rows] = await db.query(
-      'SELECT id, nome, email, nivel_cefr, telefone FROM alunos WHERE id = ?',
+    const { rows } = await db.query(
+      'SELECT id, nome, email, nivel_cefr, telefone FROM alunos WHERE id = $1',
       [req.aluno.id]
     );
     if (rows.length === 0) {
