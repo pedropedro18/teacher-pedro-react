@@ -21,7 +21,7 @@ router.get('/me', verificarTokenAluno, meuPerfil);
 // Listar alunos
 router.get('/', async (req, res) => {
   try {
-    const { rows } = await db.query(SELECT `${CAMPOS} FROM alunos ORDER BY nome`);
+    const { rows } = await db.query(`SELECT ${CAMPOS} FROM alunos ORDER BY nome`);
     res.json(rows);
   } catch (err) {
     res.status(500).json({ erro: err.message });
@@ -32,7 +32,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const { rows } = await db.query(
-      `SELECT ${CAMPOS} FROM alunos WHERE id = $1?`,
+      `SELECT ${CAMPOS} FROM alunos WHERE id = $1`,
       [req.params.id]
     );
     if (rows.length === 0) return res.status(404).json({ erro: 'Aluno não encontrado' });
