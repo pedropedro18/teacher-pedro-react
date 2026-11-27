@@ -18,7 +18,7 @@ export async function loginAluno(req, res) {
       [String(email).trim()]
     );
     const aluno = rows[0];
-    console.log('Aluno encontrado?', !!aluno);
+    console.log('Aluno encontrado?', !!aluno,'| tem hash?', !!aluno?.password_hash);
 
     if (!aluno || !aluno.password_hash) {
       return res.status(401).json({ error: 'Credenciais inválidas' });
