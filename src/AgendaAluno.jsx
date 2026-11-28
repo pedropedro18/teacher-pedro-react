@@ -1,3 +1,4 @@
+import BotaoAula from "./BotaoAula";
 import { useEffect, useState } from "react";
 
 const DURACAO_MIN = 60;
@@ -73,11 +74,7 @@ export default function AgendaAluno({ nomeAluno }) {
             <strong>{formatar(a.data)}</strong> · Nível {a.nivel}
           </div>
           <div>{a.tema}</div>
-          {a.link && (
-            <a href={a.link} target="_blank" rel="noreferrer">
-              Entrar na aula
-            </a>
-          )}
+          {a.link && <BotaoAula aula={a} />}
         </div>
       ))}
     </section>
