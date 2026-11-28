@@ -64,7 +64,7 @@ export default function Aluno() {
   const entrar = async () => {
     setErro("");
     try {
-      const res = await fetch("/api/alunos/login", {
+      const res = await fetch("/api/aluno/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: email.trim(), password }),
