@@ -6,6 +6,7 @@ const AVISO_MIN = 60;
 
 const formatar = (d) =>
   d.toLocaleString("pt-PT", {
+    timeZone: "Africa/Luanda",
     weekday: "long",
     day: "2-digit",
     month: "long",
