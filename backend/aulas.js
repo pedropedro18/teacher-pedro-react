@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
     res.json(rows);
   } catch (e) {
     console.error(e);
-    res.status(500).json({ erro: 'Erro ao carregar aulas' });
+    res.status(500).json({ erro: 'Erro ao carregar aulas',detalhes: e.message });
   }
 });
 
