@@ -71,7 +71,8 @@ export default function Aluno() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setErro(data.erro || "Email ou palavra-passe inválidos.");
+        console.log("login status:", res.status, data);
+setErro((data.erro || data.error || data.message || "Email ou palavra-passe inválidos.") + " (" + res.status + ")");
         return;
       }
       setAluno(data.aluno || data);
