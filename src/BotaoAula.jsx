@@ -22,7 +22,9 @@ function BotaoAula({ aula }) {
     return <span>Aula terminada</span>;
   }
   return (
-    <a href={aula.link} target="_blank" rel="noreferrer">
+    <a href={aula.link} target="_blank" rel="noreferrer"
+    style={{ color: "#fff", fontWeight: "bold", textDecoration: "underline"}}
+    >
       Entrar na aula
     </a>
   );
